@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Putnam and Beyond</title>
+<style>
+:root {
+  --bg: #ffffff; --fg: #111111; --muted: #555555; --rule: #bbbbbb;
+  --link: #0000cc; --visited: #551a8b;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #161616; --fg: #e8e8e8; --muted: #a0a0a0; --rule: #444444; --link: #8ab4ff; --visited: #c9a6ff; }
+}
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", "Iowan Old Style", Georgia, serif;
+  font-size: 17px; line-height: 1.5;
+  max-width: 44rem; margin: 0 auto; padding: 32px 16px 64px;
+}
+h1 { font-size: 1.9em; font-weight: normal; margin: 0 0 4px; }
+h2 { font-size: 1.25em; font-weight: normal; margin: 32px 0 8px; border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+.sub, .pending, footer { color: var(--muted); }
+dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 16px; margin: 12px 0; }
+dt { font-style: italic; }
+dd { margin: 0; }
+code { font-family: Consolas, "Courier New", monospace; font-size: .9em; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; vertical-align: top; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--rule); }
+th { font-weight: normal; font-style: italic; color: var(--muted); }
+td.nw { white-space: nowrap; }
+ul { padding-left: 1.3em; }
+footer { margin-top: 40px; font-size: .9em; }
+</style>
+</head>
+<body>
+
+<h1>Putnam and Beyond</h1>
+<p class="sub">A problem-solving course, 2026&ndash;27</p>
+
+<dl>
+  <dt>Texts</dt><dd>R. Gelca and T. Andreescu, <i>Putnam and Beyond</i> (P&amp;B); P. Zeitz, <i>The Art and Craft of Problem Solving</i> (ACPS)</dd>
+  <dt>Submissions</dt><dd>Google Classroom</dd>
+  <dt>Quizzes</dt><dd>Posted on Classroom at the announced time; 60 minutes, closed book</dd>
+  <dt>Format</dt><dd>Handouts are typeset with <a href="tex/evan.sty" target="_blank" rel="noopener"><code>evan.sty</code></a> by Evan Chen</dd>
+</dl>
+
+<h2>Course documents</h2>
+<ul>
+  <li><a href="syllabus.pdf" target="_blank" rel="noopener">Syllabus</a></li>
+  <li><a href="tex/submission-template.tex" target="_blank" rel="noopener">Submission template</a> (LaTeX; compile with <a href="tex/evan.sty" target="_blank" rel="noopener"><code>evan.sty</code></a> in the same folder)</li>
+</ul>
+
+<h2>Schedule</h2>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Week</th><th>Dates</th><th>Topic</th><th>Materials</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td class="nw">2&ndash;8 Nov</td><td>Contradiction; induction (P&amp;B 1.1&ndash;1.2)</td>
+        <td><a href="week01/notes.pdf" target="_blank" rel="noopener">Notes</a>, <a href="week01/pset.pdf" target="_blank" rel="noopener">Problem set</a> (due Sun 8 Nov)</td></tr>
+    <tr><td>2</td><td class="nw">9&ndash;15 Nov</td><td>Strong and forward&ndash;backward induction (P&amp;B 1.2)</td><td class="pending">not yet posted</td></tr>
+    <tr><td>3</td><td class="nw">16&ndash;22 Nov</td><td>Pigeonhole principle (P&amp;B 1.3)</td><td class="pending">not yet posted</td></tr>
+    <tr><td>4</td><td class="nw">23&ndash;29 Nov</td><td>Ordered sets and extremal elements (P&amp;B 1.4)</td><td class="pending">not yet posted</td></tr>
+    <tr><td>5</td><td class="nw">30 Nov&ndash;6 Dec</td><td>Invariants and semi-invariants (P&amp;B 1.5)</td><td class="pending">not yet posted</td></tr>
+    <tr><td>6</td><td class="nw">7&ndash;13 Dec</td><td>Unit 1 test</td><td class="pending">not yet posted</td></tr>
+  </tbody>
+</table>
+</div>
+
+<footer>Problems marked P&amp;B are from Gelca and Andreescu, <i>Putnam and Beyond</i> (Springer, 2007).</footer>
+
+</body>
+</html>
