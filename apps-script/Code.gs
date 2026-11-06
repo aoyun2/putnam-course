@@ -11,11 +11,14 @@
  * Operations in queue.json. Every operation has a unique "id"; each one runs once.
  *   {"id", "type": "material",   "key", "title", "description", "topic", "links": [url]}
  *   {"id", "type": "assignment", "key", "title", "description", "topic", "links": [url],
- *          "maxPoints", "due": "2026-11-08T23:59:00-08:00", "category": "Problem sets"}
+ *          "maxPoints", "due": "2026-11-08T23:59:00-08:00"}
  *   {"id", "type": "patch",      "key", "title"?, "description"?, "maxPoints"?, "due"?}
  *   {"id", "type": "grade",      "key", "grade", "feedback"}   grade, return, email feedback
  *   {"id", "type": "delete",     "key"}
  * Any operation may have "postAt": "<ISO time>"; it is skipped until that time.
+ *
+ * The script's memory (which operations ran, ids of created items) is kept in Script Properties,
+ * so a failed GitHub write never causes an item to be posted twice.
  *
  * Setup: Project Settings > Script Properties > add GITHUB_TOKEN (a fine-grained token with
  * Contents: Read and write on aoyun2/putnam-course only). Then run setup() once.
@@ -38,25 +41,43 @@ function tick() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(1000)) return;
   try {
-    const status = readJson_('status.json') || { processed: {}, items: {}, synced: {}, lastRun: null };
-    const before = JSON.stringify(status);
-    const writes = {};  // path -> Blob
-
+    const status = loadStatus_();
     const queue = readJson_('queue.json') || [];
-    for (const op of queue) runOp_(op, status);
+    for (const op of queue) runOp_(op, status);   // each result is saved to Script Properties at once
 
-    syncSubmissions_(status, writes);
+    const writes = {};       // path -> Blob
+    const pendingSync = {};  // path -> stamp, saved only after the commit succeeds
+    syncSubmissions_(status, writes, pendingSync);
 
     status.lastRun = new Date().toISOString();
-    const changed = JSON.stringify(Object.assign({}, status, { lastRun: null })) !==
-                    JSON.stringify(Object.assign(JSON.parse(before), { lastRun: null }));
-    if (changed || Object.keys(writes).length) {
-      writes['status.json'] = Utilities.newBlob(JSON.stringify(status, null, 2), 'application/json');
+    const mirror = JSON.stringify({ processed: status.processed, items: status.items }, null, 2);
+    const props = PropertiesService.getScriptProperties();
+    if (props.getProperty('mirror') !== mirror || Object.keys(writes).length) {
+      writes['status.json'] = Utilities.newBlob(mirror, 'application/json');
       commit_(writes, 'Classroom bridge update');
+      props.setProperty('mirror', mirror);
+      for (const path of Object.keys(pendingSync)) props.setProperty('sync:' + path, pendingSync[path]);
     }
   } finally {
     lock.releaseLock();
   }
+}
+
+// Script Properties hold the bridge's memory: op:<id>, item:<key>, sync:<path>.
+function loadStatus_() {
+  const all = PropertiesService.getScriptProperties().getProperties();
+  const status = { processed: {}, items: {}, synced: {} };
+  for (const k of Object.keys(all)) {
+    if (k.indexOf('op:') === 0) status.processed[k.slice(3)] = JSON.parse(all[k]);
+    else if (k.indexOf('item:') === 0) status.items[k.slice(5)] = JSON.parse(all[k]);
+    else if (k.indexOf('sync:') === 0) status.synced[k.slice(5)] = all[k];
+  }
+  return status;
+}
+
+function saveItem_(status, key, item) {
+  status.items[key] = item;
+  PropertiesService.getScriptProperties().setProperty('item:' + key, JSON.stringify(item));
 }
 
 // ---------------------------------------------------------------- operations
@@ -78,13 +99,17 @@ function runOp_(op, status) {
     if (!(e instanceof NotReady)) r.attempts += 1;  // waiting for the student is not a failure
   }
   r.at = new Date().toISOString();
+  if (r.error) r.error = r.error.slice(0, 300);
   status.processed[op.id] = r;
+  PropertiesService.getScriptProperties().setProperty('op:' + op.id, JSON.stringify(r));
 }
 
 function NotReady(message) { this.message = message; }
 
 const OPS_ = {
   material(op, status) {
+    const existing = findOwn_('material', op.title);
+    if (existing) { saveItem_(status, op.key, { kind: 'material', id: existing }); return existing; }
     const res = Classroom.Courses.CourseWorkMaterials.create({
       title: op.title,
       description: op.description || '',
@@ -92,11 +117,13 @@ const OPS_ = {
       topicId: op.topic ? topicId_(op.topic) : undefined,
       state: 'PUBLISHED',
     }, COURSE_ID);
-    status.items[op.key] = { kind: 'material', id: res.id };
+    saveItem_(status, op.key, { kind: 'material', id: res.id });
     return res.id;
   },
 
   assignment(op, status) {
+    const existing = findOwn_('assignment', op.title);
+    if (existing) { saveItem_(status, op.key, { kind: 'assignment', id: existing }); return existing; }
     const body = {
       title: op.title,
       description: op.description || '',
@@ -107,9 +134,8 @@ const OPS_ = {
       topicId: op.topic ? topicId_(op.topic) : undefined,
     };
     if (op.due) Object.assign(body, due_(op.due));
-    if (op.category) body.gradeCategory = { id: categoryId_(op.category) };
     const res = Classroom.Courses.CourseWork.create(body, COURSE_ID);
-    status.items[op.key] = { kind: 'assignment', id: res.id };
+    saveItem_(status, op.key, { kind: 'assignment', id: res.id });
     return res.id;
   },
 
@@ -151,13 +177,14 @@ const OPS_ = {
     if (item.kind === 'assignment') Classroom.Courses.CourseWork.remove(COURSE_ID, item.id);
     else Classroom.Courses.CourseWorkMaterials.remove(COURSE_ID, item.id);
     item.deleted = true;
+    saveItem_(status, op.key, item);
     return item.id;
   },
 };
 
 // ---------------------------------------------------------------- submissions
 
-function syncSubmissions_(status, writes) {
+function syncSubmissions_(status, writes, pendingSync) {
   for (const key of Object.keys(status.items)) {
     const item = status.items[key];
     if (item.kind !== 'assignment' || item.deleted) continue;
@@ -181,13 +208,14 @@ function syncSubmissions_(status, writes) {
         const stamp = f.getLastUpdated().toISOString();
         if (status.synced[path] === stamp) return;
         writes[path] = isGoogle ? f.getAs('application/pdf') : f.getBlob();
-        status.synced[path] = stamp;
+        pendingSync[path] = stamp;
       });
       const infoPath = 'submissions/' + key + '/info.json';
       const infoText = JSON.stringify(info, null, 2);
-      if (status.synced[infoPath] !== infoText) {
+      const hash = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, infoText));
+      if (status.synced[infoPath] !== hash) {
         writes[infoPath] = Utilities.newBlob(infoText, 'application/json');
-        status.synced[infoPath] = infoText;
+        pendingSync[infoPath] = hash;
       }
     }
   }
@@ -239,12 +267,19 @@ function topicId_(name) {
   return Classroom.Courses.Topics.create({ name: name }, COURSE_ID).topicId;
 }
 
-function categoryId_(name) {
-  const course = Classroom.Courses.get(COURSE_ID);
-  const cats = (course.gradebookSettings && course.gradebookSettings.gradeCategories) || [];
-  const c = cats.find(x => x.name === name);
-  if (!c) throw new Error('no grade category named ' + name);
-  return c.id;
+// Returns the id of a published item with this title that this script created, or null.
+function findOwn_(kind, title) {
+  let pageToken;
+  do {
+    const res = kind === 'assignment'
+      ? Classroom.Courses.CourseWork.list(COURSE_ID, { pageToken: pageToken })
+      : Classroom.Courses.CourseWorkMaterials.list(COURSE_ID, { pageToken: pageToken });
+    const list = (kind === 'assignment' ? res.courseWork : res.courseWorkMaterial) || [];
+    const hit = list.find(x => x.title === title && x.associatedWithDeveloper);
+    if (hit) return hit.id;
+    pageToken = res.nextPageToken;
+  } while (pageToken);
+  return null;
 }
 
 function item_(status, key, kind) {
