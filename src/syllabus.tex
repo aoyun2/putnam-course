@@ -1,0 +1,224 @@
+\documentclass[11pt]{scrartcl}
+\usepackage[noasy]{evan}
+\usepackage{booktabs,tabularx,longtable}
+\renewcommand{\S}{\ensuremath{\mathsection}}
+\renewcommand{\labelitemi}{\ensuremath{\bullet}}
+
+\title{Putnam and Beyond: Syllabus}
+\author{Claude}
+\date{2 November 2026}
+
+\begin{document}
+\maketitle
+
+\section{Texts}
+\begin{itemize}
+  \ii \textbf{Main text.} R.~Gelca and T.~Andreescu, \emph{Putnam and Beyond} (Springer, 2007).
+  Cited as P\&B. Problem numbers such as ``P\&B 16'' refer to the numbered problems in the book.
+  \ii \textbf{Method reference.} P.~Zeitz, \emph{The Art and Craft of Problem Solving}, 3rd ed.
+  Cited as ACPS. The lecture notes use its vocabulary for the thinking process:
+  orientation, penultimate step, get your hands dirty, wishful thinking, make it easier,
+  crux move, and the strategy/tactic/tool levels.
+\end{itemize}
+
+\section{Weekly cycle}
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  \textbf{When} & \textbf{What} \\
+  \midrule
+  Monday & Lecture notes and problem set for the week are released.
+    Graded work from the previous week is returned on Classroom. \\
+  Monday, 7:00--8:05 pm & Timed quiz on the \emph{previous} week's material (60 minutes, 3 problems). \\
+  Sunday, 11:59 pm & Problem set due. \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{Problem sets.}
+Each set has \emph{required} problems and \emph{challenge} problems.
+Required problems are the graded core. Challenge problems are optional and earn bonus points
+(see \Cref{sec:grading}).
+
+\paragraph{Quizzes.}
+Quiz $N$ covers the material of week $N$ and is given the Monday after that week's problem set is due,
+so you take it after you have worked through the problems.
+It is posted on Google Classroom at 7:00 pm and is due at 8:05 pm: 60 minutes of work plus 5 minutes
+to photograph or upload. Classroom marks anything turned in after 8:05 pm as late.
+Closed book: no notes, no texts, no computer.
+
+\paragraph{Unit tests.}
+At the end of each unit there is a 3-hour test with 6 problems, ordered by difficulty
+in the same way as one session (A or B) of the Putnam. It is posted on Classroom at an announced
+time and is due 3 hours 5 minutes later.
+
+\paragraph{Final exam.}
+A full mock Putnam at the end of the course: two 3-hour sessions, 12 problems.
+
+\section{Rules}
+\begin{enumerate}
+  \ii Do not read the back-of-book solution of an assigned P\&B problem until your work on it
+  has been graded. After grading, read it. The book's solution often uses a different idea
+  from yours, and comparing the two is part of the exercise.
+  \ii No web searches and no other AI tools on graded work.
+  You may use ACPS and the course notes on problem sets, but not on quizzes or tests.
+  \ii \textbf{Hints.} On problem sets you may ask me for a hint on a problem.
+  A problem solved after a hint is scored out of 7 instead of 10.
+  Ask only after you have worked on the problem for at least 30 minutes.
+  \ii There are no extensions on quizzes or tests. A late problem set is accepted up to
+  48 hours late at 80\% credit.
+\end{enumerate}
+
+\section{Grading}\label{sec:grading}
+\subsection{Scores on one problem}
+Every problem is scored out of 10.
+
+\paragraph{Quizzes and tests (Putnam scale).}
+The Putnam gives almost no credit for an incomplete solution. Quizzes and tests use the same scale,
+so that you learn what ``complete'' means.
+\begin{center}
+\begin{tabularx}{\linewidth}{cX}
+  \toprule
+  \textbf{Score} & \textbf{Meaning} \\
+  \midrule
+  10 & Complete and correct. \\
+  8--9 & Complete, with a minor error or a small gap that is easy to fill. \\
+  1--2 & Substantial progress (for example, a correct key lemma), but no complete solution. \\
+  0 & Anything else, including a correct answer without proof. \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{Problem sets (full scale).}
+Scores 0--10 are all possible. A correct solution with an unclear or disorganized write-up loses
+1--2 points. If you do not solve a problem, submit an \vocab{investigation log}: what you tried,
+what each attempt showed, why it failed, and any partial results (special cases, a conjectured answer,
+a reduction to a simpler claim). A good log earns up to 3 points.
+This rewards the investigation process, which ACPS treats as the main part of problem solving.
+
+\paragraph{Challenge problems.}
+Each challenge problem scored $s$ out of 10 adds $s/2$ bonus points to that week's problem set total.
+The problem-set percentage for a week is capped at 100\%.
+
+\subsection{Course grade}
+\begin{center}
+\begin{tabular}{lr}
+  \toprule
+  \textbf{Component} & \textbf{Weight} \\
+  \midrule
+  Problem sets & 35\% \\
+  Quizzes & 20\% \\
+  Unit tests & 30\% \\
+  Final exam (mock Putnam) & 15\% \\
+  \bottomrule
+\end{tabular}
+\end{center}
+The lowest problem set and the lowest quiz are dropped.
+Letter grades: A $\geq 80\%$, B $\geq 65\%$, C $\geq 50\%$.
+These cutoffs are lower than in a normal course because the problems are competition problems.
+A grade report (all scores to date and the running course grade) comes with every graded submission.
+
+\section{How to write a solution}
+These are the standards the grading uses.
+\begin{enumerate}
+  \ii For a ``find'' problem, state the answer in the first line. Then prove two things:
+  the answer works, and nothing else works.
+  \ii Write the \emph{argument}, not the \emph{investigation}. The experiments you did to find the idea
+  do not belong in the proof. (They belong in an investigation log if the problem is unsolved.)
+  \ii Define every variable before you use it.
+  \ii Split a long proof into claims. State each claim, then prove it.
+  Say at the end how the claims give the result.
+  \ii Use ``clearly'' or ``obviously'' only for a step the reader can check in about ten seconds.
+  \ii In a proof by contradiction, write the assumption explicitly as the first sentence
+  (``Assume, for contradiction, that \ldots'') and mark the contradiction when you reach it.
+  \ii In a proof by induction, state the claim $P(n)$ exactly, then label the base case and the inductive step.
+\end{enumerate}
+
+\paragraph{Format.}
+Turn in each submission on Google Classroom, as photographs of handwritten work or as a PDF.
+If you typeset, use the file \texttt{submission-template.tex} (it uses \texttt{evan.sty}).
+Start each problem on a new page.
+
+\section{Schedule}
+Dates are given for Unit~1. Later dates are set as we go, and the pace can change
+according to your scores. The finals period (14--18 December) has no assignments.
+
+\begin{longtable}{@{}p{0.07\linewidth}p{0.17\linewidth}p{0.5\linewidth}p{0.16\linewidth}@{}}
+  \toprule
+  \textbf{Week} & \textbf{Dates} & \textbf{P\&B sections} & \textbf{ACPS reading} \\
+  \midrule
+  \endhead
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 1: Methods of Proof} (P\&B Chapter 1)} \\
+  1 & 2--8 Nov & 1.1 Contradiction; 1.2 Induction (ordinary form) & 1.2, 2.1--2.3 \\
+  2 & 9--15 Nov & 1.2 Strong induction; forward--backward induction & 2.3, 2.4 \\
+  3 & 16--22 Nov & 1.3 Pigeonhole principle & 3.3 \\
+  4 & 23--29 Nov & 1.4 Ordered sets and extremal elements & 3.2 \\
+  5 & 30 Nov--6 Dec & 1.5 Invariants and semi-invariants & 3.4 \\
+  6 & 7--13 Dec & \textbf{Unit 1 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 2: Algebra I} (P\&B 2.1--2.2)} \\
+  7 & & 2.1.1--2.1.2 Identities; $x^2\geq 0$ & 5.2 \\
+  8 & & 2.1.3--2.1.4 Cauchy--Schwarz; triangle inequality & 5.5 \\
+  9 & & 2.1.5--2.1.7 AM--GM; Sturm's principle; other inequalities & 5.5 \\
+  10 & & 2.2.1--2.2.3 Polynomials; Vi\`ete; derivative & 5.4 \\
+  11 & & 2.2.4--2.2.6 Location of zeros; irreducibility; Chebyshev polynomials & 5.4 \\
+  12 & & \textbf{Unit 2 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 3: Number Theory} (P\&B Chapter 5)} \\
+  13 & & 5.1 Integer sequences; infinite descent; floor function & 7.1 \\
+  14 & & 5.2.1--5.2.3 Divisibility; primes; modular arithmetic & 7.1, 7.2 \\
+  15 & & 5.2.4--5.2.7 Fermat; Wilson; Euler $\varphi$; CRT & 7.2, 7.3 \\
+  16 & & 5.3 Diophantine equations & 7.4, 7.5 \\
+  17 & & \textbf{Unit 3 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 4: Combinatorics and Probability} (P\&B Chapter 6)} \\
+  18 & & 6.1.1--6.1.3 Sets; permutations; combinatorial geometry & 6.1 \\
+  19 & & 6.1.4--6.1.5 Euler's formula; Ramsey theory & 4.1 \\
+  20 & & 6.2.1--6.2.2 Combinatorial identities; generating functions & 6.2, 4.3 \\
+  21 & & 6.2.3--6.2.4 Counting strategies; inclusion--exclusion & 6.3, 6.4 \\
+  22 & & 6.3 Probability & --- \\
+  23 & & \textbf{Unit 4 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 5: Sequences and Series} (P\&B 3.1)} \\
+  24 & & 3.1.1--3.1.2 Patterns; linear recurrences & 6.4 \\
+  25 & & 3.1.3--3.1.4 Limits of sequences & 9.2 \\
+  26 & & 3.1.5--3.1.6 Series; telescoping & 5.3, 9.4 \\
+  27 & & \textbf{Unit 5 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 6: Linear and Abstract Algebra} (P\&B 2.3--2.4)} \\
+  28 & & 2.3.1--2.3.3 Matrices; determinants; inverses & --- \\
+  29 & & 2.3.4--2.3.6 Linear systems; vector spaces; eigenvalues & --- \\
+  30 & & 2.3.7 Cayley--Hamilton, Perron--Frobenius; 2.4 Groups and rings & --- \\
+  31 & & \textbf{Unit 6 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 7: Calculus} (P\&B 3.2)} \\
+  32 & & 3.2.1--3.2.3 Limits; continuity; intermediate value property & 9.2 \\
+  33 & & 3.2.4--3.2.6 Derivatives; mean value theorem; convexity & 9.3 \\
+  34 & & 3.2.7--3.2.9 Integrals; Riemann sums & 9.1, 9.3 \\
+  35 & & 3.2.10--3.2.11 Integral inequalities; Taylor and Fourier series & 9.4 \\
+  36 & & \textbf{Unit 7 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 8: Multivariable Calculus, Functional and Differential Equations} (P\&B 3.3--3.4)} \\
+  37 & & 3.3.1--3.3.2 Partial derivatives; multiple integrals & --- \\
+  38 & & 3.3.3 Stokes' theorem & --- \\
+  39 & & 3.4.1 Functional equations & 5.1 \\
+  40 & & 3.4.2--3.4.4 Ordinary differential equations & --- \\
+  41 & & \textbf{Unit 8 test} & --- \\
+  \midrule
+  \multicolumn{4}{@{}p{\linewidth}@{}}{\textbf{Unit 9: Geometry and Trigonometry} (P\&B Chapter 4)} \\
+  42 & & 4.1.1--4.1.2 Vectors; lines and circles & 8.2, 8.3 \\
+  43 & & 4.1.3--4.1.4 Conics; geometry in 3 and more dimensions & 8.4 \\
+  44 & & 4.1.5--4.1.6 Integrals in geometry; other problems & 8.5 \\
+  45 & & 4.2 Trigonometry; Euler's formula; substitutions & 4.2 \\
+  46 & & \textbf{Unit 9 test} & --- \\
+  \midrule
+  47 & & \textbf{Final exam: mock Putnam} (2 $\times$ 3 hours) & --- \\
+  \bottomrule
+\end{longtable}
+
+\paragraph{Why this order.}
+Chapter 1 comes first, as the authors recommend: its methods are used in every later chapter.
+Inequalities and polynomials come next because Units 3--9 use them constantly.
+Number theory and combinatorics need no prerequisites beyond Unit 1 and overlap with Math 55.
+The analysis chapters come later, after more experience with proofs.
+\end{document}
