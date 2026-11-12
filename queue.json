@@ -6,9 +6,17 @@
     "title": "Week 1 Problem Set",
     "description": "8 required problems (10 points each) and 2 challenge problems (bonus, half their score). Upload a PDF or photos, one problem per page, and click Turn in. Do not read the back-of-book solutions until this is graded. If you cannot solve a problem, submit an investigation log for up to 3 points.",
     "topic": "Week 1: Contradiction and Induction",
-    "links": ["https://aoyun2.github.io/putnam-course/week01/pset.pdf"],
+    "links": [
+      "https://aoyun2.github.io/putnam-course/week01/pset.pdf"
+    ],
     "maxPoints": 80,
     "due": "2026-11-08T23:59:00-08:00",
     "category": "Problem sets"
+  },
+  {
+    "id": "2026-11-12-week01-pset-due",
+    "type": "patch",
+    "key": "week01-pset",
+    "due": "2026-11-22T23:59:00-08:00"
   }
 ]
