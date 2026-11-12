@@ -1,12 +1,19 @@
 \documentclass[11pt]{scrartcl}
 \usepackage[boxthm,secthm,noasy]{evan}
 \usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\newenvironment{fig}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}{\end{minipage}\par\medskip}
 \renewcommand{\S}{\ensuremath{\mathsection}}
 \renewcommand{\labelitemi}{\ensuremath{\bullet}}
 
 \title{Week 1: Contradiction and Induction}
 \author{Claude}
-\date{2 November 2026}
+\date{16 November 2026}
 
 \begin{document}
 \maketitle
@@ -99,6 +106,29 @@ Why is it one less than a square? Pair the outer factors and the inner factors:
 $n(n+3) = n^2 + 3n$ and $(n+1)(n+2) = n^2 + 3n + 2$. The two products differ by $2$.
 With $m = n^2 + 3n$, the product is $m(m+2) = (m+1)^2 - 1$.
 (Check: $n = 1$ gives $m = 4$ and $5^2 - 1 = 24$.)
+
+\begin{fig}
+\begin{tikzpicture}[x=1cm,y=1cm]
+  % pairing of factors
+  \foreach \i/\lab in {0/n,1/n+1,2/n+2,3/n+3}
+    \node (f\i) at (1.6*\i,0) {$\lab$};
+  \draw[thick,-] (f0.north) to[bend left=35] node[above]{$n(n+3) = m$} (f3.north);
+  \draw[thick,-] (f1.south) to[bend right=40] node[below]{$(n+1)(n+2) = m+2$} (f2.south);
+  % number line
+  \begin{scope}[yshift=-2.4cm]
+    \draw[-{Stealth}] (-0.5,0) -- (6.8,0);
+    \draw (0,0.12) -- (0,-0.12) node[below]{$m^2$};
+    \draw (5.2,0.12) -- (5.2,-0.12) node[below left=0pt and -6pt]{$m(m+2)$};
+    \draw (6.2,0.12) -- (6.2,-0.12) node[below right=0pt and -6pt]{$(m+1)^2$};
+    \fill (5.2,0) circle (2pt);
+    \draw[decorate,decoration={brace,amplitude=4pt}] (0,0.25) -- node[above=4pt]{$2m$} (5.2,0.25);
+    \draw[decorate,decoration={brace,amplitude=4pt}] (5.2,0.25) -- node[above=4pt]{$1$} (6.2,0.25);
+  \end{scope}
+\end{tikzpicture}
+\captionof{figure}{Top: pair the outer factors and the inner factors; the two products differ by $2$.
+Bottom: the product $m(m+2)$ is $1$ short of $(m+1)^2$ and $2m$ past $m^2$, so it lies strictly
+between two consecutive squares.}
+\end{fig}
 
 \begin{proof}
 Let $m = n^2 + 3n \geq 4$. Then
@@ -201,6 +231,29 @@ so $p \mid P(kp)$.
 If all values are prime, a prime divisible by $p$ must equal $p$. So $P$ takes the value $p$
 infinitely often. A nonconstant polynomial cannot do that.
 
+\begin{fig}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.62\linewidth, height=5.2cm,
+  axis lines=left, xmin=-0.5, xmax=10.5, ymin=0, ymax=24,
+  xtick={0,3,6,9}, xticklabels={$0$,$p$,$2p$,$3p$},
+  ytick={3,9,15,21}, yticklabels={$p$,$9$,$15$,$21$},
+  xlabel={$x$}, ylabel={$P(x)$}, every axis label/.style={font=\small},
+  clip=false]
+  \addplot[domain=0:10.5, thick] {2*x+3};
+  \addplot[domain=-0.5:10.5, dashed, gray] {3};
+  \addplot[only marks, mark=*, mark size=2pt] coordinates {(0,3) (3,9) (6,15) (9,21)};
+  \node[below right, font=\small] at (axis cs:3,9)  {$9 = 3\cdot 3$};
+  \node[below right, font=\small] at (axis cs:6,15) {$15 = 3\cdot 5$};
+  \node[below right, font=\small] at (axis cs:9,21) {$21 = 3\cdot 7$};
+  \node[above right, font=\small, gray] at (axis cs:6.6,3) {the line $y = p$};
+\end{axis}
+\end{tikzpicture}
+\captionof{figure}{$P(x) = 2x + 3$, so $p = P(0) = 3$. Every value $P(kp)$ is a multiple of $p$.
+If all of them were prime, every marked point would have to lie on the dashed line $y = p$.
+A nonconstant polynomial meets a horizontal line only finitely many times.}
+\end{fig}
+
 \begin{proof}
 Assume, for contradiction, that such a $P$ exists. Let $p = P(0)$, a prime.
 For each integer $k \geq 1$, \Cref{fact:poly} gives $kp \mid P(kp) - P(0)$, so $p \mid P(kp)$.
@@ -234,6 +287,32 @@ is already inside $E_1$, so we only need to exclude the $r$ elements of $E_1$.
 Each of those $r$ elements is missing from some set. That gives $r$ more sets, and
 $1 + r$ sets in total. The count matches the $r+1$ in the hypothesis exactly,
 which is good evidence that this is the intended argument.
+
+\begin{fig}
+\begin{tikzpicture}[x=1.1cm,y=0.75cm]
+  \foreach \j/\lab in {1/x_1,2/x_2,3/x_3,4/x_4}
+    \node at (\j,0.9) {$\lab$};
+  \foreach \i/\lab in {0/E_1,1/E_{j_1},2/E_{j_2},3/E_{j_3},4/E_{j_4}}
+    \node[anchor=east] at (0.4,-\i) {$\lab$};
+  \foreach \j in {1,...,4} \node at (\j,0) {$\in$};
+  \foreach \i in {1,...,4} {
+    \foreach \j in {1,...,4} {
+      \ifnum\i=\j
+        \fill[gray!30] (\j-0.45,-\i-0.4) rectangle (\j+0.45,-\i+0.4);
+        \node at (\j,-\i) {$\notin$};
+      \else
+        \node[gray] at (\j,-\i) {$\cdot$};
+      \fi
+    }
+  }
+  \draw (0.5,0.45) -- (4.5,0.45);
+  \draw (0.5,-0.5) -- (4.5,-0.5);
+\end{tikzpicture}
+\captionof{figure}{The case $r = 4$. Columns are the elements of $E_1$; rows are the $r + 1$ chosen sets.
+Row $E_{j_i}$ is chosen to miss $x_i$ (shaded). Every element of $E_1$ is missed by some row,
+and elements outside $E_1$ are missed by row $E_1$, so the $r + 1$ sets have empty intersection.
+The dots mean ``may or may not be in the set''; the argument does not need to know.}
+\end{fig}
 
 \begin{proof}
 Assume, for contradiction, that $\bigcap_{j} E_j = \varnothing$.
@@ -269,8 +348,24 @@ reaches an impossibility in the middle of the argument, as in the three proofs a
   \end{enumerate}
   Then $P(n)$ is true for all $n \geq n_0$.
 \end{theorem}
-The base case starts the chain and the step moves it forward one place at a time.
-Both are required. In the step, $k$ is arbitrary: you may use only $P(k)$ and $k \geq n_0$.
+The base case proves the first statement, and the step proves each implication
+$P(k) \Rightarrow P(k+1)$. Following the implications from $P(n_0)$ reaches every $P(n)$ with $n \geq n_0$.
+Both parts are required. In the step, $k$ is arbitrary: you may use only $P(k)$ and $k \geq n_0$.
+
+\begin{fig}
+\begin{tikzpicture}[box/.style={draw, rounded corners=2pt, minimum width=1.55cm, minimum height=0.7cm},
+                    node distance=0.75cm]
+  \node[box, fill=gray!25] (a) {$P(n_0)$};
+  \node[box, right=of a] (b) {$P(n_0{+}1)$};
+  \node[box, right=of b] (c) {$P(n_0{+}2)$};
+  \node[right=of c] (d) {$\cdots$};
+  \node[box, right=of d] (e) {$P(n)$};
+  \foreach \u/\v in {a/b,b/c,c/d,d/e} \draw[-{Stealth},thick] (\u) -- node[above,font=\scriptsize]{step} (\v);
+  \node[below=0.15cm of a, font=\scriptsize] {base case};
+\end{tikzpicture}
+\captionof{figure}{The base case proves the shaded statement. One inductive step, proved for arbitrary $k$,
+supplies every arrow at once.}
+\end{fig}
 
 \paragraph{When to use it.}
 Use induction when the statement is indexed by an integer, or when the objects in the problem
@@ -297,6 +392,31 @@ $\binom pj k^j$ with $1 \leq j \leq p-1$. So the step reduces to:
 \emph{$p$ divides $\binom pj$ for $1 \le j \le p-1$.} Test $p = 5$: $\binom51, \dots, \binom54
 = 5, 10, 10, 5$. All divisible by $5$. For a composite number, $\binom 42 = 6$ is not divisible by $4$,
 so primality must be used.
+
+\begin{fig}
+\begin{tikzpicture}[x=0.62cm,y=0.55cm]
+  \foreach \n in {0,...,7} {
+    \node[anchor=east,font=\scriptsize,gray] at (-4.6,-\n) {row $\n$};
+    \foreach \k in {0,...,\n} {
+      \pgfmathtruncatemacro{\c}{round(\n!/(\k!*(\n-\k)!))}
+      \pgfmathtruncatemacro{\interior}{(\k>0)&&(\k<\n)}
+      \pgfmathtruncatemacro{\divis}{(mod(\c,max(\n,1))==0)}
+      \ifnum\interior=1
+        \ifnum\divis=1
+          \node[circle, fill=gray!30, inner sep=1.2pt, font=\small] at (\k-\n/2,-\n) {$\c$};
+        \else
+          \node[rectangle, draw, inner sep=1.6pt, font=\small] at (\k-\n/2,-\n) {$\c$};
+        \fi
+      \else
+        \node[font=\small] at (\k-\n/2,-\n) {$\c$};
+      \fi
+    }
+  }
+\end{tikzpicture}
+\captionof{figure}{Pascal's triangle. Interior entries of row $n$ that are divisible by $n$ are shaded;
+those that are not are boxed. In the prime rows $2, 3, 5, 7$ every interior entry is shaded.
+Rows $4$ and $6$ have boxed entries ($6$; $15$ and $20$).}
+\end{fig}
 
 \begin{proof}
 First, for $1 \leq j \leq p-1$ we have $p! = \binom pj \, j! \, (p-j)!$.
@@ -332,6 +452,40 @@ So: \emph{keep every color on one side of the new line and swap every color on t
 Old neighbors on the same side are either both kept or both swapped, so they stay different.
 Neighbors across the new line are halves of one old region, so after the swap they differ.
 The variable to induct on is the number of lines.
+
+\begin{fig}
+\begin{tikzpicture}[scale=0.85]
+  % half-planes as large polygons, clipped to the box [0,4]x[0,3]
+  \def\Lone{(-10,-4.5) -- (14,7.5) -- (14,25) -- (-10,25) -- cycle}
+  \def\Ltwo{(-10,19.5) -- (14,-16.5) -- (14,25) -- (-10,25) -- cycle}
+  \def\Lnew{(-10,-0.2) -- (14,2.2) -- (14,-20) -- (-10,-20) -- cycle}
+  \foreach \panel/\shift in {1/0,2/5,3/10} {
+    \begin{scope}[xshift=\shift cm]
+      \begin{scope}
+        \clip (0,0) rectangle (4,3);
+        \ifnum\panel=3
+          \fill[gray!45, even odd rule] \Lone \Ltwo \Lnew;
+        \else
+          \fill[gray!45, even odd rule] \Lone \Ltwo;
+        \fi
+        \draw[thick] (-1,0) -- (5,3);
+        \draw[thick] (-1,6) -- (5,-3);
+        \ifnum\panel>1
+          \draw[very thick, dashed] (-1,0.7) -- (5,1.3);
+        \fi
+      \end{scope}
+      \draw (0,0) rectangle (4,3);
+    \end{scope}
+  }
+  \node[font=\small] at (2,-0.45) {(a) two lines};
+  \node[font=\small] at (7,-0.45) {(b) add $\ell$ (dashed)};
+  \node[font=\small] at (12,-0.45) {(c) swap colors below $\ell$};
+  \node[font=\small] at (9.25,1.3) {$\ell$};
+\end{tikzpicture}
+\captionof{figure}{(a) A good coloring for two lines. (b) The new line $\ell$ cuts three regions in two;
+each pair of halves has one color, so neighbors across $\ell$ match. (c) Reversing every color below $\ell$
+makes neighbors across $\ell$ differ and leaves all other neighboring pairs as they were.}
+\end{fig}
 
 \begin{proof}
 Call a coloring \emph{good} if regions sharing a boundary segment have different colors.
@@ -392,6 +546,31 @@ The base case needs $Q_1 = \tfrac12 \le 1/\sqrt{3 + c}$, that is, $c \le 1$.
 So $c = 1$ satisfies both requirements. Since $1/\sqrt{3n+1} < 1/\sqrt{3n}$,
 the stronger statement implies the original one.
 
+The figure plots the right side of the step condition, $(4c-3)\,n + 3(c-1)$, for three choices of $c$.
+The step from $n$ to $n+1$ works exactly when the plotted value at $n$ is at least $0$.
+
+\begin{fig}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.55\linewidth, height=5.4cm,
+  axis lines=left, xmin=0.5, xmax=6.5, ymin=-22, ymax=8,
+  xtick={1,...,6}, xlabel={$n$}, ylabel={$(4c-3)\,n + 3(c-1)$},
+  every axis label/.style={font=\small},
+  clip=false]
+  \addplot[thick, mark=*, samples at={1,...,6}] {x};
+  \node[right, font=\small] at (axis cs:6.3,6.5) {$c = 1$: value $n$};
+  \addplot[thick, mark=square*, mark size=1.5pt, samples at={1,...,6}] {-0.75};
+  \node[right, font=\small] at (axis cs:6.3,-2.2) {$c = \tfrac34$: value $-\tfrac34$};
+  \addplot[thick, mark=o, samples at={1,...,6}] {-3*x-3};
+  \node[right, font=\small] at (axis cs:6.3,-17.5) {$c = 0$: value $-3n-3$};
+  \addplot[domain=0.5:6.5, dashed, gray] {0};
+\end{axis}
+\end{tikzpicture}
+\captionof{figure}{The inductive step works where the plotted value is at least $0$ (on or above the dashed line).
+The original bound ($c = 0$) fails at every $n$, and so does $c = \tfrac34$. The value $c = 1$ works at every $n$.
+Values $c > 1$ also make the step work, but they fail the base case.}
+\end{fig}
+
 \begin{proof}
 We prove $Q_n \le 1/\sqrt{3n+1}$ for all $n \geq 1$ by induction. This implies the claim,
 since $1/\sqrt{3n+1} < 1/\sqrt{3n}$.
@@ -424,7 +603,24 @@ which holds since $k \ge 0$.
   so all $k+1$ horses have the same color.''
 \end{example}
 The error is in the step from $k = 1$ to $k = 2$. The two groups are $\{h_1\}$ and $\{h_2\}$,
-and they share no horse. The step must work for \emph{every} $k \geq n_0$, including the smallest one.
+and they share no horse.
+
+\begin{fig}
+\begin{tikzpicture}[x=0.9cm,y=0.9cm]
+  \foreach \i in {1,...,4} { \fill (\i,0) circle (2.5pt); \node[below=1pt,font=\small] at (\i,0) {$h_\i$}; }
+  \draw (2,-0.2) ellipse (1.4 and 0.6);
+  \draw[dashed] (3,-0.2) ellipse (1.5 and 0.72);
+  \node[font=\small] at (2.5,-1.4) {$k = 3$: the groups share $h_2, h_3$};
+  \begin{scope}[xshift=6.5cm]
+    \foreach \i in {1,2} { \fill (\i,0) circle (2.5pt); \node[below=1pt,font=\small] at (\i,0) {$h_\i$}; }
+    \draw (1,-0.2) ellipse (0.38 and 0.6);
+    \draw[dashed] (2,-0.2) ellipse (0.42 and 0.72);
+    \node[font=\small] at (1.5,-1.4) {$k = 1$: no shared horse};
+  \end{scope}
+\end{tikzpicture}
+\captionof{figure}{The argument needs a horse in both groups. That exists for $k \ge 2$ and fails for $k = 1$,
+so the chain of implications breaks at its first link.}
+\end{fig} The step must work for \emph{every} $k \geq n_0$, including the smallest one.
 \textbf{Always test your inductive step at $k = n_0$}, and look for any sentence in it that
 silently assumes $k$ is large.
 
