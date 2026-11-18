@@ -53,6 +53,7 @@ weekNN/pset.pdf               problem set for week NN
 weekNN/quiz.pdf               quiz for week NN (added after the quiz is given)
 tex/submission-template.tex   LaTeX template for typed solutions
 tex/evan.sty                  Evan Chen's LaTeX style file
+pdfjs/                        PDF.js viewer that the site opens the PDFs in
 ```
 
 ## Credits
@@ -61,5 +62,6 @@ tex/evan.sty                  Evan Chen's LaTeX style file
 - P. Zeitz, *The Art and Craft of Problem Solving*, 3rd ed., Wiley, 2017.
 - A. Engel, *Problem-Solving Strategies*, Springer, 1998. Problems marked "Engel" are quoted from this book for study purposes; the book's copyright belongs to its publisher. The same applies to problems quoted from the other books listed in the syllabus.
 - [`evan.sty`](https://github.com/vEnhance/dotfiles/blob/main/texmf/tex/latex/evan/evan.sty) by Evan Chen, used under the Boost Software License 1.0.
+- [PDF.js](https://mozilla.github.io/pdf.js/) 4.10.38 by Mozilla, used under the Apache License 2.0 (`pdfjs/LICENSE`).
 
-The MIT license in this repository covers the original course materials. It does not cover the quoted textbook problems or `evan.sty`.
+The MIT license in this repository covers the original course materials. It does not cover the quoted textbook problems, `evan.sty` or PDF.js.
