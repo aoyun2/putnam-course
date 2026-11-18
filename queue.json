@@ -18,5 +18,33 @@
     "type": "patch",
     "key": "week01-pset",
     "due": "2026-11-22T23:59:00-08:00"
+  },
+  {
+    "id": "2026-11-18-syllabus",
+    "type": "material",
+    "key": "syllabus",
+    "title": "Syllabus",
+    "description": "Olympiad and Putnam Problem Solving: texts, rules, grading and the full schedule (23 November 2026 to 21 August 2027).",
+    "topic": "Course documents",
+    "links": [
+      "https://aoyun2.github.io/putnam-course/syllabus.pdf"
+    ]
+  },
+  {
+    "id": "2026-11-18-week01-notes",
+    "type": "material",
+    "key": "week01-notes",
+    "title": "Week 1 notes: Contradiction and Induction",
+    "description": "Reading: P&B 1.1, 1.2 (up to strong induction); ACPS 1.2, 2.1-2.3; Engel, Chapter 8.",
+    "topic": "Week 1: Contradiction and Induction",
+    "links": [
+      "https://aoyun2.github.io/putnam-course/week01/notes.pdf"
+    ]
+  },
+  {
+    "id": "2026-11-18-week01-pset-due",
+    "type": "patch",
+    "key": "week01-pset",
+    "due": "2026-11-29T23:59:00-08:00"
   }
 ]
