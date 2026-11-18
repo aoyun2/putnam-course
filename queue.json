@@ -46,5 +46,12 @@
     "type": "patch",
     "key": "week01-pset",
     "due": "2026-11-29T23:59:00-08:00"
+  },
+  {
+    "id": "2026-11-18-week01-pset-points",
+    "type": "patch",
+    "key": "week01-pset",
+    "maxPoints": 120,
+    "description": "12 required problems (10 points each) and 3 challenge problems (bonus, half their score). Upload a PDF or photos, one problem per page, and click Turn in. Do not read published solutions until this is graded. If you cannot solve a problem, submit an investigation log for up to 3 points."
   }
 ]
