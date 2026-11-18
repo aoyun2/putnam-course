@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Putnam and Beyond</title>
+<title>Olympiad and Putnam Problem Solving</title>
 <style>
 :root {
   --bg: #ffffff; --fg: #111111; --muted: #555555; --rule: #bbbbbb;
@@ -32,6 +32,7 @@ code { font-family: Consolas, "Courier New", monospace; font-size: .9em; }
 table { border-collapse: collapse; width: 100%; }
 th, td { text-align: left; vertical-align: top; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--rule); }
 th { font-weight: normal; font-style: italic; color: var(--muted); }
+th.unit { font-style: normal; font-weight: bold; color: var(--fg); padding-top: 14px; }
 td.nw { white-space: nowrap; }
 ul { padding-left: 1.3em; }
 footer { margin-top: 40px; font-size: .9em; }
@@ -39,13 +40,14 @@ footer { margin-top: 40px; font-size: .9em; }
 </head>
 <body>
 
-<h1>Putnam and Beyond</h1>
-<p class="sub">A problem-solving course, 2026&ndash;27</p>
+<h1>Olympiad and Putnam Problem Solving</h1>
+<p class="sub">A problem-solving course, 2026&ndash;27, with the emphasis of the Putnam</p>
 
 <dl>
-  <dt>Texts</dt><dd>R. Gelca and T. Andreescu, <i>Putnam and Beyond</i> (P&amp;B); P. Zeitz, <i>The Art and Craft of Problem Solving</i> (ACPS)</dd>
+  <dt>Texts</dt><dd>Gelca and Andreescu, <i>Putnam and Beyond</i> (P&amp;B); Zeitz, <i>The Art and Craft of Problem Solving</i> (ACPS); Engel, <i>Problem-Solving Strategies</i>; and a book list for each area in the syllabus</dd>
   <dt>Submissions</dt><dd>Google Classroom</dd>
-  <dt>Quizzes</dt><dd>Posted on Classroom at the announced time; 60 minutes, closed book</dd>
+  <dt>Quizzes</dt><dd>Mondays 7:00&ndash;8:05 pm on Classroom; 60 minutes, closed book</dd>
+  <dt>Tests</dt><dd>Unit tests and monthly mock contests on Saturdays, 10:00 am&ndash;1:05 pm; 3 hours, 6 problems</dd>
   <dt>Format</dt><dd>Handouts are typeset with <a href="tex/evan.sty" target="_blank" rel="noopener"><code>evan.sty</code></a> by Evan Chen</dd>
 </dl>
 
@@ -60,19 +62,72 @@ footer { margin-top: 40px; font-size: .9em; }
 <table>
   <thead><tr><th>Week</th><th>Dates</th><th>Topic</th><th>Materials</th></tr></thead>
   <tbody>
-    <tr><td>1</td><td class="nw">16&ndash;22 Nov</td><td>Contradiction; induction (P&amp;B 1.1&ndash;1.2)</td>
-        <td><a href="week01/notes.pdf" target="_blank" rel="noopener">Notes</a>, <a href="week01/pset.pdf" target="_blank" rel="noopener">Problem set</a> (due Sun 22 Nov), quiz Mon 23 Nov, 7:00&ndash;8:05 pm</td></tr>
-    <tr><td>2</td><td class="nw">23&ndash;29 Nov</td><td>Strong and forward&ndash;backward induction (P&amp;B 1.2)</td><td class="pending">not yet posted</td></tr>
-    <tr><td>3</td><td class="nw">30 Nov&ndash;6 Dec</td><td>Pigeonhole principle (P&amp;B 1.3)</td><td class="pending">not yet posted</td></tr>
-    <tr><td>4</td><td class="nw">7&ndash;13 Dec</td><td>Ordered sets and extremal elements (P&amp;B 1.4)</td><td class="pending">not yet posted</td></tr>
-    <tr><td></td><td class="nw">14&ndash;20 Dec</td><td>Finals week: no work (Quiz 4 is Mon 21 Dec)</td><td></td></tr>
-    <tr><td>5</td><td class="nw">21&ndash;27 Dec</td><td>Invariants and semi-invariants (P&amp;B 1.5)</td><td class="pending">not yet posted</td></tr>
-    <tr><td>6</td><td class="nw">28 Dec&ndash;3 Jan</td><td>Unit 1 test</td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 1: Methods of Proof and Strategies</th></tr>
+    <tr><td>1</td><td class="nw">23&ndash;29 Nov</td><td>Contradiction; ordinary induction</td><td><a href="week01/notes.pdf" target="_blank" rel="noopener">Notes</a>, <a href="week01/pset.pdf" target="_blank" rel="noopener">Problem set</a> (due Sun 29 Nov), quiz Mon 30 Nov, 7:00&ndash;8:05 pm</td></tr>
+    <tr><td>2</td><td class="nw">30 Nov&ndash;6 Dec</td><td>Strong induction; forward&ndash;backward induction; recursion</td><td class="pending">not yet posted</td></tr>
+    <tr><td>3</td><td class="nw">7&ndash;13 Dec</td><td>Pigeonhole principle (basic and strong forms)</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">14&ndash;20 Dec</td><td>Finals week: no work</td><td></td></tr>
+    <tr><td>4</td><td class="nw">21&ndash;27 Dec</td><td>Extremal principle; ordered sets; infinite descent</td><td class="pending">not yet posted</td></tr>
+    <tr><td>5</td><td class="nw">28 Dec&ndash;3 Jan</td><td>Invariants and monovariants; coloring proofs</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 2 Jan</td><td><b>Unit 1 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 2: Number Theory I</th></tr>
+    <tr><td>6</td><td class="nw">4&ndash;10 Jan</td><td>Divisibility; gcd; Euclidean algorithm; B&eacute;zout's identity; unique factorization</td><td class="pending">not yet posted</td></tr>
+    <tr><td>7</td><td class="nw">11&ndash;17 Jan</td><td>Modular arithmetic; inverses; Fermat's, Euler's and Wilson's theorems</td><td class="pending">not yet posted</td></tr>
+    <tr><td>8</td><td class="nw">18&ndash;24 Jan</td><td>Chinese remainder theorem (construction and uniqueness); linear Diophantine equations; factoring tricks (Simon's favorite factoring trick, sums and differences of powers); floor function; Legendre's formula</td><td class="pending">not yet posted</td></tr>
+    <tr><td>9</td><td class="nw">25&ndash;31 Jan</td><td>Lifting the exponent lemma; integer sequences</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 30 Jan</td><td><b>Unit 2 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 3: Combinatorics I</th></tr>
+    <tr><td>10</td><td class="nw">1&ndash;7 Feb</td><td>Bijections; double counting; binomial coefficients and identities</td><td class="pending">not yet posted</td></tr>
+    <tr><td>11</td><td class="nw">8&ndash;14 Feb</td><td>Inclusion&ndash;exclusion; probability</td><td class="pending">not yet posted</td></tr>
+    <tr><td>12</td><td class="nw">15&ndash;21 Feb</td><td>Recurrences; generating functions (ordinary and exponential)</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 20 Feb</td><td><b>Unit 3 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 4: Algebra I</th></tr>
+    <tr><td>13</td><td class="nw">22&ndash;28 Feb</td><td>Identities; x<sup>2</sup> &ge; 0; substitutions; Cauchy&ndash;Schwarz; triangle inequality</td><td class="pending">not yet posted</td></tr>
+    <tr><td>14</td><td class="nw">1&ndash;7 Mar</td><td>AM&ndash;GM; other classical inequalities</td><td class="pending">not yet posted</td></tr>
+    <tr><td>15</td><td class="nw">8&ndash;14 Mar</td><td>Polynomials; Vieta's formulas; roots and the derivative</td><td class="pending">not yet posted</td></tr>
+    <tr><td>16</td><td class="nw">15&ndash;21 Mar</td><td>Location of zeros; irreducibility; Chebyshev polynomials</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 20 Mar</td><td><b>Unit 4 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 5: Analysis I: Sequences and Series</th></tr>
+    <tr><td>17</td><td class="nw">22&ndash;28 Mar</td><td>Patterns; linear recurrences; limits of sequences</td><td class="pending">not yet posted</td></tr>
+    <tr><td>18</td><td class="nw">29 Mar&ndash;4 Apr</td><td>Series; telescoping</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 3 Apr</td><td><b>Unit 5 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 6: Geometry I</th></tr>
+    <tr><td>19</td><td class="nw">5&ndash;11 Apr</td><td>Angle chasing; similar triangles; circle theorems; directed angles mod 180&deg;</td><td class="pending">not yet posted</td></tr>
+    <tr><td>20</td><td class="nw">12&ndash;18 Apr</td><td>Power of a point; radical axis and radical center; Ceva's and Menelaus' theorems (Euclidean and trigonometric forms); triangle centers; nine-point circle; Euler line</td><td class="pending">not yet posted</td></tr>
+    <tr><td>21</td><td class="nw">19&ndash;25 Apr</td><td>Ptolemy's theorem; spiral similarity; homothety; vectors, coordinates and trigonometry in geometry</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 24 Apr</td><td><b>Unit 6 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 7: Number Theory II</th></tr>
+    <tr><td>22</td><td class="nw">26 Apr&ndash;2 May</td><td><i>p</i>-adic valuations; <i>v<sub>p</sub></i> notation; the ultrametric inequality; orders; primitive roots; the structure of (<b>Z</b>/<i>p</i><b>Z</b>)<sup>*</sup></td><td class="pending">not yet posted</td></tr>
+    <tr><td>23</td><td class="nw">3&ndash;9 May</td><td>Quadratic residues; Legendre symbol; quadratic reciprocity</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">10&ndash;16 May</td><td>Finals week: no work</td><td></td></tr>
+    <tr><td>24</td><td class="nw">17&ndash;23 May</td><td>Pell's equation (fundamental solution, all solutions); Vieta jumping</td><td class="pending">not yet posted</td></tr>
+    <tr><td>25</td><td class="nw">24&ndash;30 May</td><td>Multiplicative functions; Euler's &phi;; M&ouml;bius inversion</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 29 May</td><td><b>Unit 7 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 8: Combinatorics II</th></tr>
+    <tr><td>26</td><td class="nw">31 May&ndash;6 Jun</td><td>Graph theory: paths, cycles, trees, bipartite graphs, Euler's formula; matchings and Hall's theorem; graph coloring</td><td class="pending">not yet posted</td></tr>
+    <tr><td>27</td><td class="nw">7&ndash;13 Jun</td><td>Invariants and monovariants in games and processes</td><td class="pending">not yet posted</td></tr>
+    <tr><td>28</td><td class="nw">14&ndash;20 Jun</td><td>Extremal combinatorics: Tur&aacute;n's theorem, Ramsey theory; the probabilistic method (basic form; Lov&aacute;sz local lemma)</td><td class="pending">not yet posted</td></tr>
+    <tr><td>29</td><td class="nw">21&ndash;27 Jun</td><td>The linear algebra method (rank arguments; the polynomial method); construction problems</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 26 Jun</td><td><b>Unit 8 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 9: Linear and Abstract Algebra</th></tr>
+    <tr><td>30</td><td class="nw">28 Jun&ndash;4 Jul</td><td>Matrices; determinants; inverses; linear systems; vector spaces; eigenvalues</td><td class="pending">not yet posted</td></tr>
+    <tr><td>31</td><td class="nw">5&ndash;11 Jul</td><td>Cayley&ndash;Hamilton; Perron&ndash;Frobenius; groups and rings; functional equations</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 10 Jul</td><td><b>Unit 9 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 10: Analysis II: Calculus</th></tr>
+    <tr><td>32</td><td class="nw">12&ndash;18 Jul</td><td>Limits; continuity; intermediate value property; derivatives; mean value theorem; convexity</td><td class="pending">not yet posted</td></tr>
+    <tr><td>33</td><td class="nw">19&ndash;25 Jul</td><td>Integrals; Riemann sums; integral inequalities</td><td class="pending">not yet posted</td></tr>
+    <tr><td>34</td><td class="nw">26 Jul&ndash;1 Aug</td><td>Taylor series; multivariable calculus; differential equations</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 31 Jul</td><td><b>Unit 10 test</b></td><td class="pending">not yet posted</td></tr>
+    <tr><th colspan="4" class="unit">Unit 11: Geometry II</th></tr>
+    <tr><td>35</td><td class="nw">2&ndash;8 Aug</td><td>Inversion</td><td class="pending">not yet posted</td></tr>
+    <tr><td>36</td><td class="nw">9&ndash;15 Aug</td><td>Complex numbers (the unit-circle method); barycentric coordinates (setup, distance formula, collinearity and concurrence)</td><td class="pending">not yet posted</td></tr>
+    <tr><td>37</td><td class="nw">16&ndash;22 Aug</td><td>Projective geometry: harmonic conjugates, poles and polars, Pascal's theorem; conics; geometry in three dimensions</td><td class="pending">not yet posted</td></tr>
+    <tr><td></td><td class="nw">Sat 21 Aug</td><td><b>Final exam: mock Putnam</b></td><td class="pending">not yet posted</td></tr>
   </tbody>
 </table>
 </div>
 
-<footer>Problems marked P&amp;B are from Gelca and Andreescu, <i>Putnam and Beyond</i> (Springer, 2007).</footer>
+<footer>Problem sources are given with each problem: P&amp;B is Gelca and Andreescu, <i>Putnam and Beyond</i>; Engel is <i>Problem-Solving Strategies</i>; the syllabus lists the other books.</footer>
 
 </body>
 </html>
