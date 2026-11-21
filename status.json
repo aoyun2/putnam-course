@@ -1,5 +1,23 @@
 {
   "processed": {
+    "2026-11-18-syllabus": {
+      "attempts": 0,
+      "ok": true,
+      "result": "900327445547",
+      "at": "2026-11-18T19:30:46.990Z"
+    },
+    "2026-11-18-week01-notes": {
+      "attempts": 0,
+      "ok": true,
+      "result": "891414512238",
+      "at": "2026-11-18T19:30:48.362Z"
+    },
+    "2026-11-12-week01-pset-due": {
+      "attempts": 0,
+      "ok": true,
+      "result": "898009711742",
+      "at": "2026-11-12T20:20:46.933Z"
+    },
     "2026-11-05-week01-pset": {
       "attempts": 0,
       "ok": true,
@@ -12,43 +30,25 @@
       "result": "898009711742",
       "at": "2026-11-18T19:30:50.827Z"
     },
-    "2026-11-12-week01-pset-due": {
-      "attempts": 0,
-      "ok": true,
-      "result": "898009711742",
-      "at": "2026-11-12T20:20:46.933Z"
-    },
     "2026-11-18-week01-pset-points": {
       "attempts": 0,
       "ok": true,
       "result": "898009711742",
       "at": "2026-11-18T19:40:47.779Z"
-    },
-    "2026-11-18-week01-notes": {
-      "attempts": 0,
-      "ok": true,
-      "result": "891414512238",
-      "at": "2026-11-18T19:30:48.362Z"
-    },
-    "2026-11-18-syllabus": {
-      "attempts": 0,
-      "ok": true,
-      "result": "900327445547",
-      "at": "2026-11-18T19:30:46.990Z"
     }
   },
   "items": {
-    "week01-notes": {
+    "syllabus": {
       "kind": "material",
-      "id": "891414512238"
+      "id": "900327445547"
     },
     "week01-pset": {
       "kind": "assignment",
       "id": "898009711742"
     },
-    "syllabus": {
+    "week01-notes": {
       "kind": "material",
-      "id": "900327445547"
+      "id": "891414512238"
     }
   }
 }
