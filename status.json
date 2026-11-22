@@ -1,22 +1,28 @@
 {
   "processed": {
+    "2026-11-18-syllabus": {
+      "attempts": 0,
+      "ok": true,
+      "result": "900327445547",
+      "at": "2026-11-18T19:30:46.990Z"
+    },
     "2026-11-18-week01-pset-points": {
       "attempts": 0,
       "ok": true,
       "result": "898009711742",
       "at": "2026-11-18T19:40:47.779Z"
     },
-    "2026-11-18-week01-notes": {
-      "attempts": 0,
-      "ok": true,
-      "result": "891414512238",
-      "at": "2026-11-18T19:30:48.362Z"
-    },
     "2026-11-18-week01-pset-due": {
       "attempts": 0,
       "ok": true,
       "result": "898009711742",
       "at": "2026-11-18T19:30:50.827Z"
+    },
+    "2026-11-18-week01-notes": {
+      "attempts": 0,
+      "ok": true,
+      "result": "891414512238",
+      "at": "2026-11-18T19:30:48.362Z"
     },
     "2026-11-12-week01-pset-due": {
       "attempts": 0,
@@ -29,12 +35,6 @@
       "ok": true,
       "result": "898009711742",
       "at": "2026-11-06T03:40:46.304Z"
-    },
-    "2026-11-18-syllabus": {
-      "attempts": 0,
-      "ok": true,
-      "result": "900327445547",
-      "at": "2026-11-18T19:30:46.990Z"
     }
   },
   "items": {
