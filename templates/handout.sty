@@ -1,0 +1,125 @@
+% Shared style for every handout and solutions file (adapted from aoyun2/berkeley templates/handout.sty).
+% Load after evan.sty:
+%   \documentclass[10pt]{scrartcl}
+%   \usepackage[mdthm,colorsec,noauthor,noasy]{evan}
+%   \usepackage{handout}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{handout}
+\hypersetup{colorlinks=true,linkcolor=RoyalBlue,urlcolor=RoyalBlue,citecolor=RoyalBlue,pdfborder={0 0 0}}
+\RequirePackage[letterpaper,margin=0.75in,headsep=0.25in]{geometry}
+\RequirePackage{needspace}
+\RequirePackage{etoolbox}
+\RequirePackage{booktabs}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\RequirePackage{tikz-3dplot}
+\RequirePackage{tikz-cd}
+\usetikzlibrary{arrows.meta,positioning,calc,backgrounds,decorations.pathreplacing,decorations.markings,angles,quotes,fit,matrix,shapes.geometric,patterns}
+\setlist{itemsep=2pt,topsep=3pt,parsep=0pt}
+\setlist[itemize,2]{beginpenalty=10000}
+\setlist[enumerate,2]{beginpenalty=10000}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{3em}
+% ---- Visual design system for figures (Spivak Calculus on Manifolds monograph aesthetic) ----
+\definecolor{figblue}{HTML}{1E4D7B}
+\definecolor{figred}{HTML}{A92B27}
+\definecolor{figgreen}{HTML}{2A6246}
+\definecolor{figamber}{HTML}{9C6118}
+\definecolor{figpurple}{HTML}{5E3C75}
+\definecolor{figslate}{HTML}{5C6570}
+\definecolor{figbg}{HTML}{F8F9FA}
+\tikzset{
+  >={Stealth[length=4.0pt,width=2.3pt]},
+  figaxis/.style={-{Stealth[length=3.6pt,width=2.1pt]}, draw=black!80, line width=0.42pt},
+  figgrid/.style={draw=black!9, line width=0.25pt},
+  figvec/.style={-{Stealth[length=4.4pt,width=2.5pt]}, draw=black, line width=0.8pt, line cap=round},
+  figvecsub/.style={-{Stealth[length=3.8pt,width=2.2pt]}, draw=black!55, line width=0.55pt, line cap=round},
+  figguide/.style={line width=.72pt, line cap=round, dash pattern=on 0.05pt off 2.7pt, draw=black!45},
+  figplane/.style={fill=black!9, draw=none},
+  figplaneR/.style={fill=black!15, draw=none},
+  figplaneG/.style={fill=black!6, draw=none},
+  halo/.style={fill=white, inner sep=1.3pt},
+  figdot/.style={circle, fill=black, inner sep=1.15pt},
+  figbox/.style={draw=black!85, fill=white, line width=0.45pt, inner sep=4.5pt, align=center},
+  figpanel/.style={draw=black!50, fill=none, line width=0.45pt},
+}
+\pgfplotsset{
+  handoutplot/.style={
+    axis lines=middle,
+    axis line style={-{Stealth[length=4pt,width=2.6pt]}, black!80},
+    tick label style={font=\scriptsize, text=black},
+    label style={font=\footnotesize, text=black},
+    grid=major,
+    grid style={black!12, line width=0.3pt},
+    samples=120,
+    smooth
+  }
+}
+% ---- Native named-destination and cross-week link macros ----
+\newcommand{\target}[1]{\raisebox{2.0\baselineskip}[0pt][0pt]{\hypertarget{#1}{}}\label{#1}}
+\newcommand{\ilink}[2]{\hyperlink{#1}{#2}}
+\newcommand{\xlink}[3]{\href{https://aoyun2.github.io/putnam-course/pdfjs/web/viewer.html?file=/putnam-course/#1/notes.pdf\#nameddest=#2}{#3}}
+\newcommand{\xweek}[2]{\href{https://aoyun2.github.io/putnam-course/pdfjs/web/viewer.html?file=/putnam-course/#1/notes.pdf}{#2}}
+% \xlink{week01}{fact-squeeze}{Week~1, Fact~1.1} opens the Week 1 notes at that result in the site's PDF viewer.
+% \xweek{week01}{Week~1} opens the Week 1 notes at the first page.
+% Theorem-type boxes never split across pages.
+\mdfdefinestyle{mdbluebox}{roundcorner=6pt,linewidth=0.8pt,skipabove=7pt,skipbelow=2pt,innertopmargin=5pt,innerbottommargin=5pt,linecolor=blue,nobreak=true,backgroundcolor=TealBlue!5}
+\mdfdefinestyle{mdredbox}{linewidth=0.5pt,skipabove=7pt,skipbelow=2pt,innertopmargin=3pt,innerbottommargin=5pt,nobreak=true,backgroundcolor=Salmon!5,linecolor=RawSienna}
+% "The question." box at the start of a section: what problem the section solves.
+\mdfdefinestyle{qboxstyle}{nobreak=true,linewidth=0pt,backgroundcolor=black!5,innertopmargin=6pt,innerbottommargin=6pt,skipabove=4pt,skipbelow=8pt}
+\newenvironment{qbox}{\begin{mdframed}[style=qboxstyle]\textbf{The question.}\ }{\end{mdframed}}
+% "The idea" box: free text explaining how to find the argument (standard, Section 3).
+%   \begin{ideabox} sentences, a small worked case, or a picture \end{ideabox}
+% (motive is the old labelled version, kept only so older files still compile; do not use it.)
+\mdfdefinestyle{thinkbox}{nobreak=true,linewidth=2pt,linecolor=OliveGreen!60,topline=false,bottomline=false,rightline=false,leftline=true,backgroundcolor=OliveGreen!5,innerleftmargin=8pt,innerrightmargin=6pt,innertopmargin=4pt,innerbottommargin=5pt,skipabove=6pt,skipbelow=4pt}
+\newenvironment{motive}[1][Where the proof comes from]{\begin{mdframed}[style=thinkbox]\textbf{\color{OliveGreen!75!black}#1}\begin{description}[leftmargin=0.9em,labelindent=0pt,itemsep=2pt,topsep=2pt,font=\normalfont\bfseries\color{OliveGreen!70!black}]}{\end{description}\end{mdframed}}
+\newenvironment{ideabox}{\begin{mdframed}[style=thinkbox]\textbf{\color{OliveGreen!75!black}The idea}\par\vspace{2pt}}{\end{mdframed}}
+% Shortcuts and Traps boxes.
+\mdfdefinestyle{fastboxstyle}{nobreak=true,linewidth=2pt,linecolor=NavyBlue!55,topline=false,bottomline=false,rightline=false,leftline=true,backgroundcolor=NavyBlue!4,innerleftmargin=8pt,innerrightmargin=6pt,innertopmargin=4pt,innerbottommargin=5pt,skipabove=8pt,skipbelow=6pt}
+\newenvironment{shortcuts}{\begin{mdframed}[style=fastboxstyle]\textbf{\color{NavyBlue}Shortcuts}\begin{itemize}[itemsep=2pt,topsep=2pt]}{\end{itemize}\end{mdframed}}
+\mdfdefinestyle{trapstyle}{nobreak=true,linewidth=0.6pt,linecolor=RawSienna,backgroundcolor=Salmon!6,skipabove=8pt,skipbelow=6pt,innertopmargin=4pt,innerbottommargin=5pt}
+\newenvironment{trapbox}{\begin{mdframed}[style=trapstyle]\textbf{\color{RawSienna}Traps}\begin{itemize}[itemsep=1pt,topsep=1pt]}{\end{itemize}\end{mdframed}}
+% Numbered proof steps.
+\newenvironment{steps}{\begin{enumerate}[label=\arabic*.,leftmargin=1.5em,itemsep=2pt,topsep=2pt]}{\end{enumerate}}
+% Short reason after a fact; for more than one sentence put a steps list inside.
+\newcommand{\tool}[1]{\textbf{#1}}
+\newcommand{\why}[1]{\par\vspace{2pt}{\color{OliveGreen!70!black}\textbf{Why.}}\ #1\par}
+% Headed method paragraph (computing techniques).
+\newcommand{\method}[1]{\par\Needspace{7\baselineskip}\medskip\noindent{\color{NavyBlue}\textbf{#1}}\ }
+% Figures: \begin{fig} tikz \figcap{caption} \end{fig}
+\newenvironment{fig}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}{\end{minipage}\par\medskip}
+\newcommand{\figcap}[1]{\par\vspace{4pt}\begin{minipage}{0.90\linewidth}\small\centering #1\end{minipage}}
+% A problem (or solution) that cannot split across pages:
+%   \begin{prob}\textbf{HW11 P2.}\ statement...\end{prob}
+\newenvironment{prob}{\par\bigskip\noindent\begin{minipage}{\linewidth}\setlength{\parskip}{4pt}}{\end{minipage}\par}
+\providecommand{\hint}[1]{\par\smallskip\noindent\emph{Hint:}\ #1\par}
+% Solutions: first line of each solution.
+\newcommand{\idea}[1]{{\color{OliveGreen!75!black}\textbf{Idea.}}\ #1\par}
+% Keep headings and theorems with what follows them.
+\let\oldsubsection\subsection
+\renewcommand{\subsection}{\Needspace{14\baselineskip}\oldsubsection}
+\let\oldsection\section
+\renewcommand{\section}{\Needspace{16\baselineskip}\oldsection}
+\BeforeBeginEnvironment{theorem}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{theorem*}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{proposition}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{proposition*}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{lemma}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{lemma*}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{corollary}{\Needspace{14\baselineskip}}
+\BeforeBeginEnvironment{corollary*}{\Needspace{14\baselineskip}}
+% ---- code (programming courses) ----
+\RequirePackage[T1]{fontenc}
+\RequirePackage{lmodern}
+\RequirePackage{textcomp}
+\RequirePackage{listings}
+\lstdefinestyle{hcode}{basicstyle=\ttfamily\small,columns=fullflexible,keepspaces=true,showstringspaces=false,
+  keywordstyle=\color{NavyBlue}\bfseries,commentstyle=\color{black!55}\itshape,stringstyle=\color{RawSienna},
+  backgroundcolor=\color{black!4},frame=single,rulecolor=\color{black!15},framesep=4pt,xleftmargin=6pt,xrightmargin=6pt,
+  numbers=none,aboveskip=6pt,belowskip=6pt,breaklines=true,upquote=true,literate={-}{-}1}
+\lstnewenvironment{py}[1][]{\endgraf\smallskip\noindent\minipage{\linewidth}\lstset{style=hcode,language=Python,#1}}{\endminipage\endgraf\smallskip}
+\lstnewenvironment{rcode}[1][]{\endgraf\smallskip\noindent\minipage{\linewidth}\lstset{style=hcode,language=R,#1}}{\endminipage\endgraf\smallskip}
+\lstnewenvironment{plain}[1][]{\endgraf\smallskip\noindent\minipage{\linewidth}\lstset{style=hcode,language={},#1}}{\endminipage\endgraf\smallskip}
+\newcommand{\cd}[1]{\texttt{#1}}
+\endinput

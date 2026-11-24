@@ -1,0 +1,45 @@
+\documentclass[10pt]{scrartcl}
+\usepackage[mdthm,colorsec,noasy]{evan}
+\usepackage{handout}
+\usepackage{figure-ink}
+% Course-specific macros go here.
+% Ink figure styles (as in the Berkeley handouts).
+\newcommand{\PacketInkPath}[2][]{\InkStroke[#1]{#2}}
+\tikzset{
+  >={Stealth[length=4.6pt,width=2pt,inset=1.2pt]},
+  figaxis/.style={ink arrow,draw=inkslate,line width=.35pt},
+  figvec/.style={ink arrow,draw=inkblue},
+  figvecsub/.style={ink arrow,draw=inkslate},
+  figguide/.style={ink guide,draw=inkslate}
+}
+\title{Week N: TOPIC}
+\subtitle{SOURCES (e.g.\ P\&B \S1.1--1.2; ACPS \S2.3; Engel Ch.~8)}
+\author{Aaron Xiong}
+\date{DATE}
+\ihead{}
+\begin{document}
+\maketitle
+
+\section{Facts used from earlier weeks}
+% (T1), (T2), ...: \target{T1}\tool{Name (\xlink{week01}{anchor}{Week~1, Fact~2.5}).} statement, and the reason in one line.
+
+\section{This week}
+% For each topic, in lecture order:
+%   \subsection{Topic (Ch.~X)}
+%   \begin{qbox} what problem this section solves, with a small example \end{qbox}
+%   For each result:
+%     \begin{proposition*}[Notes number / textbook number] statement \end{proposition*}
+%     \begin{ideabox} how to find the argument, in plain sentences or a small worked case (only when there is a real idea) \end{ideabox}
+%     \begin{proof} \begin{steps} \ii ... \end{steps} \end{proof}
+%   Figures with \begin{fig} ... \figcap{...} \end{fig}
+%   \begin{shortcuts} ... \end{shortcuts}
+%   \begin{trapbox} ... \end{trapbox}
+
+\section{Problem set}
+% Graded set (same problems as weekNN/pset.pdf): \begin{prob}\target{prob-1}\textbf{Problem 1 (P\&B 1).}\ statement\end{prob}
+% Extra practice (real past problems): \begin{prob}\target{prob-X1}\textbf{X1 (Putnam 1999 A1).}\ statement\end{prob}
+
+\section*{Hints for the extra practice}
+% Graded problems get no printed hints (a hint on request costs points, syllabus Rules).
+
+\end{document}

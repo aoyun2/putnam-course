@@ -1,176 +1,162 @@
-\documentclass[11pt]{scrartcl}
-\usepackage[boxthm,secthm,noasy]{evan}
-\usepackage{booktabs}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.17}
-\usepackage{caption}
-\captionsetup{font=small,labelfont=bf}
-\newenvironment{fig}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}{\end{minipage}\par\medskip}
-\newenvironment{steps}{\begin{enumerate}[label=\textbf{Step \arabic*.},leftmargin=*,align=left,itemsep=3pt]}{\end{enumerate}}
-\newcommand{\rref}[2]{\hyperref[#1]{#2}~(\Cref*{#1})}
+\documentclass[10pt]{scrartcl}
+\usepackage[mdthm,colorsec,noasy]{evan}
+\usepackage{handout}
+\usepackage{figure-ink}
+% Ink figure styles (as in the Berkeley handouts).
+\newcommand{\PacketInkPath}[2][]{\InkStroke[#1]{#2}}
+\tikzset{
+  >={Stealth[length=4.6pt,width=2pt,inset=1.2pt]},
+  figaxis/.style={ink arrow,draw=inkslate,line width=.35pt},
+  figvec/.style={ink arrow,draw=inkblue},
+  figvecsub/.style={ink arrow,draw=inkslate},
+  figguide/.style={ink guide,draw=inkslate}
+}
 \renewcommand{\S}{\ensuremath{\mathsection}}
-\renewcommand{\labelitemi}{\ensuremath{\bullet}}
 
 \title{Week 1: Contradiction and Induction}
+\subtitle{P\&B \S1.1, \S1.2 (up to strong induction); ACPS \S1.2, \S2.1--2.3; Engel Ch.~8 (problems 1--5)}
 \author{Aaron Xiong}
 \date{23 November 2026}
+\ihead{}
 
 \begin{document}
 \maketitle
-\begin{center}
-  \textbf{Reading:} P\&B \S1.1, \S1.2 (up to strong induction); ACPS \S1.2, \S2.1--2.3;
-  Engel, Chapter 8 (introduction and problems 1--5).
-\end{center}
 
-\section{How to work on a problem}
+\section{Facts used from earlier courses}
 
-\subsection{Problems and exercises}
-An \vocab{exercise} is a question you know how to answer as soon as you read it.
-A \vocab{problem} is a question you do not know how to start.
-Olympiad and Putnam questions are problems. On a problem, the first 20 minutes usually produce
-no visible progress, and that is normal.
+This is the first week, so nothing comes from an earlier week. The proofs below use only the following facts about integers and polynomials, which come from earlier courses.
+
+\begin{enumerate}[label=(T\arabic*),leftmargin=2.6em,itemsep=8pt]
+  \ii \target{T1}\tool{Division with remainder.} For integers $x$ and $d \geq 1$ there are unique integers $q$ and $r$ with $x = qd + r$ and $0 \leq r < d$.
+  \why{Take $q$ to be the largest integer with $qd \leq x$; then $r = x - qd$ satisfies $0 \leq r < d$, because $(q+1)d > x$.}
+
+  \ii \target{T2}\tool{Well-ordering principle.} Every nonempty set of positive integers has a smallest element. (This is an axiom of the integers; it is equivalent to the induction principle of \Cref{sec:induction}.)
+
+  \ii \target{T3}\tool{Binomial theorem.} For every integer $p \geq 1$ and all numbers $a, b$: $(a+b)^p = \sum_{j=0}^{p} \binom pj a^j b^{p-j}$, and each $\binom pj = \frac{p!}{j!\,(p-j)!}$ is a positive integer.
+
+  \ii \target{T4}\tool{Every integer $N \geq 2$ has a prime factor.}
+  \why{By \ilink{T2}{(T2)} the set of divisors of $N$ that are greater than $1$ has a smallest element $d$ (the set contains $N$). If $d$ were not prime, it would have a divisor $e$ with $1 < e < d$, and $e$ would also divide $N$, contradicting the choice of $d$.}
+
+  \ii \target{T5}\tool{Factoring a difference of powers.} For $j \geq 1$: $a^j - b^j = (a-b)(a^{j-1} + a^{j-2}b + \dots + b^{j-1})$.
+  \why{Multiply out the right side: every term except $a^j$ and $-b^j$ appears once with each sign and cancels.}
+\end{enumerate}
+
+\section{This week}
+
+\subsection{How to work on a problem (ACPS \S1.2, \S2.1--2.2)}
+
+\begin{qbox}
+  Is the product of four consecutive positive integers ever a perfect square? Try it: $1\cdot2\cdot3\cdot4 = 24$, $2\cdot3\cdot4\cdot5 = 120$, $3\cdot4\cdot5\cdot6 = 360$. None of these is a square, but no method is in sight yet.
+\end{qbox}
+
+An \textbf{exercise} is a question you know how to answer as soon as you read it. A \textbf{problem} is a question you do not know how to start. Olympiad and Putnam questions are problems. On a problem, the first 20 minutes usually produce no visible progress, and that is normal.
 
 Every solution has two parts (ACPS \S2.2):
 \begin{itemize}
-  \ii the \vocab{investigation}, where you find out what is true and why; and
-  \ii the \vocab{argument}, where you write a proof that convinces a reader.
+  \ii the \textbf{investigation}, where you find out what is true and why; and
+  \ii the \textbf{argument}, where you write a proof that convinces a reader.
 \end{itemize}
 A published solution shows only the argument; the investigation is the part you need to learn.
 
-\subsection{Orientation}
-Do this at the start of every problem.
+\Needspace{8\baselineskip}
+\noindent\textbf{Orientation.} Do this at the start of every problem.
 \begin{enumerate}
-  \ii Read the problem slowly. Note details: positive or nonnegative, integer or real,
-  finite or infinite, strict or non-strict inequality.
+  \ii Read the problem slowly. Note details: positive or nonnegative, integer or real, finite or infinite, strict or non-strict inequality.
   \ii Classify it: is it ``find'' or ``prove''? Have you seen a similar problem?
-  \ii Write the \vocab{hypothesis} (what is given) and the \vocab{conclusion}
-  (what you must show or find). Introduce notation for them.
+  \ii Write the \textbf{hypothesis} (what is given) and the \textbf{conclusion} (what you must show or find). Introduce notation for them.
   \ii Restate the conclusion in a different form if you can.
 \end{enumerate}
 
-\subsection{Four strategies for getting started}
-When you are oriented but have no idea, try these (ACPS \S2.2).
-\begin{description}
-  \ii[Get your hands dirty.] Compute small cases. Make a table. Look for a pattern,
-  then ask why the pattern happens.
-  \ii[Penultimate step.] Ask: ``What fact would give the conclusion in one step?''
-  Then try to prove that fact instead. For example, to show $A = B$, it is enough
-  to show $A \le B$ and $B \le A$.
-  \ii[Wishful thinking.] Ask: ``What makes this problem hard?'' Then pretend that difficulty
-  is not there and solve the problem without it. Then see how much of that solution survives
-  when you put the difficulty back.
-  \ii[Make it easier.] Solve a special case: smaller numbers, fewer variables,
-  $n = 1, 2, 3$, an extra assumption. The special case often shows the idea of the general case.
-\end{description}
-
-\subsection{Strategy, tactic, tool}
-ACPS uses three levels of method:
+\Needspace{8\baselineskip}
+\noindent\textbf{Four strategies for getting started} (ACPS \S2.2). When you are oriented but have no idea, try these.
 \begin{itemize}
-  \ii a \vocab{strategy} is a general plan that applies to almost any problem
-  (the four above, for example);
-  \ii a \vocab{tactic} is a method that applies to many problems of one kind
-  (contradiction and induction this week; pigeonhole, the extremal principle and invariants later in Unit 1);
-  \ii a \vocab{tool} is a specific technique for a narrow task
-  (the squeeze below, for example).
+  \ii \textbf{Get your hands dirty.} Compute small cases. Make a table. Look for a pattern, then ask why the pattern happens.
+  \ii \textbf{Penultimate step.} Ask which fact would give the conclusion in one step, and try to prove that fact instead. For example, to show $A = B$ it is enough to show $A \le B$ and $B \le A$.
+  \ii \textbf{Wishful thinking.} Find what makes the problem hard. Solve the problem with that difficulty removed, then see how much of that solution still works when you put the difficulty back.
+  \ii \textbf{Make it easier.} Solve a special case: smaller numbers, fewer variables, $n = 1, 2, 3$, an extra assumption. The special case often shows the idea of the general case.
 \end{itemize}
-The \vocab{crux move} is the one step that makes the rest of the solution routine.
-When you read a solution, find its crux move and write it down in one sentence.
-That sentence is what you will remember the next time.
 
-\begin{fact}[Squeeze between consecutive squares]\label{fact:squeeze}
+\Needspace{8\baselineskip}
+\noindent\textbf{Strategy, tactic, tool.} ACPS uses three levels of method:
+\begin{itemize}
+  \ii a \textbf{strategy} is a general plan that applies to almost any problem (the four above);
+  \ii a \textbf{tactic} is a method that applies to many problems of one kind (contradiction and induction this week; pigeonhole, the extremal principle and invariants later in Unit~1);
+  \ii a \textbf{tool} is a specific technique for a narrow task (the squeeze below).
+\end{itemize}
+The \textbf{crux move} is the one step that makes the rest of the solution routine. When you read a solution, find its crux move and write it down in one sentence. That sentence is what you will remember the next time.
+
+\begin{fact*}[Squeeze between consecutive squares]\target{fact-squeeze}
   If an integer $N$ satisfies $m^2 < N < (m+1)^2$ for some integer $m \geq 0$, then $N$ is not a perfect square.
-\end{fact}
+\end{fact*}
 \begin{proof}
-If $N = s^2$ with $s \geq 0$, then $m^2 < s^2 < (m+1)^2$ gives $m < s < m + 1$,
-and no integer lies strictly between two consecutive integers.
+  Suppose $N = s^2$ with $s \geq 0$. Then $m^2 < s^2 < (m+1)^2$, and since all three numbers are nonnegative this gives $m < s < m+1$. No integer lies strictly between two consecutive integers, so $N$ is not a square.
 \end{proof}
 
-\begin{example}[ACPS 1.2.1; Hungary 1926]\label{ex:hungary}
+\begin{example*}[ACPS 1.2.1; Hungary 1926: four consecutive integers]\target{ex-hungary}
   Prove that the product of four consecutive positive integers is never a perfect square.
-\end{example}
+\end{example*}
 
-\paragraph{Investigation.}
-Orientation: the hypothesis is ``$n$ is a positive integer''; the conclusion is
-``$n(n+1)(n+2)(n+3)$ is not a square.''
+\textbf{Orientation.} The hypothesis is ``$n$ is a positive integer''; the conclusion is ``$n(n+1)(n+2)(n+3)$ is not a square.''
 
-Penultimate step: how do you show a number is \emph{not} a square?
-\rref{fact:squeeze}{The squeeze between consecutive squares} does it, if we can find
-the square just below and the square just above. So we look for $m$ depending on $n$.
+\textbf{Penultimate step.} The \ilink{fact-squeeze}{squeeze between consecutive squares} shows a number is not a square once we find the square just below it and the square just above it. So we look for an $m$ depending on $n$.
 
-Get your hands dirty:
-\[
-  1\cdot2\cdot3\cdot4 = 24,\quad 2\cdot3\cdot4\cdot5 = 120,\quad
-  3\cdot 4\cdot 5\cdot 6 = 360,\quad 4\cdot5\cdot6\cdot7 = 840.
-\]
-These are $5^2 - 1$, $11^2 - 1$, $19^2 - 1$, $29^2 - 1$. So the product seems to be
-one less than a square, which would put it just below that square.
+\textbf{Get your hands dirty.} The products for $n = 1, 2, 3, 4$ are $24, 120, 360, 840$, which are $5^2 - 1$, $11^2 - 1$, $19^2 - 1$, $29^2 - 1$. So the product seems to be one less than a square, which would put it just below that square.
 
-Why is it one less than a square? Pair the outer factors and the inner factors:
-$n(n+3) = n^2 + 3n$ and $(n+1)(n+2) = n^2 + 3n + 2$. The two products differ by $2$.
-With $m = n^2 + 3n$, the product is $m(m+2) = (m+1)^2 - 1$.
-(Check: $n = 1$ gives $m = 4$ and $5^2 - 1 = 24$.)
+\begin{ideabox}
+  Why one less than a square? Pair the outer factors and the inner factors: $n(n+3) = n^2 + 3n$ and $(n+1)(n+2) = n^2 + 3n + 2$. The two products differ by $2$, so with $m = n^2 + 3n$ the product is $m(m+2) = (m+1)^2 - 1$. (Check: $n = 1$ gives $m = 4$ and $5^2 - 1 = 24$.) Pairing the factors is the crux move.
+\end{ideabox}
 
 \begin{proof}
-\begin{steps}
-  \ii Let $m = n^2 + 3n$. Since $n \geq 1$, $m \geq 4$.
-  \ii Multiply the outer and the inner pairs of factors:
-  \[ n(n+1)(n+2)(n+3) = (n^2+3n)(n^2+3n+2) = m(m+2) = (m+1)^2 - 1. \]
-  \ii Since $m > 0$, we have $m^2 < m^2 + 2m = (m+1)^2 - 1 < (m+1)^2$.
-  \ii By \rref{fact:squeeze}{the squeeze between consecutive squares}, the product is not a square.
-\end{steps}
+  \begin{steps}
+    \ii Let $m = n^2 + 3n$. Since $n \geq 1$, we have $m \geq 4$.
+    \ii Multiplying the outer pair and the inner pair of factors gives
+    \[ n(n+1)(n+2)(n+3) = (n^2+3n)(n^2+3n+2) = m(m+2) = (m+1)^2 - 1. \]
+    \ii Since $m > 0$, we have $m^2 < m^2 + 2m = (m+1)^2 - 1 < (m+1)^2$.
+    \ii By the \ilink{fact-squeeze}{squeeze between consecutive squares}, applied with this $m$, the product is not a square.
+  \end{steps}
 \end{proof}
 
 \begin{fig}
 \begin{tikzpicture}[x=1cm,y=1cm]
   \foreach \i/\lab in {0/n,1/n+1,2/n+2,3/n+3}
     \node (f\i) at (1.6*\i,0) {$\lab$};
-  \draw[thick,-] (f0.north) to[bend left=35] node[above]{$n(n+3) = m$} (f3.north);
-  \draw[thick,-] (f1.south) to[bend right=40] node[below]{$(n+1)(n+2) = m+2$} (f2.south);
-  \begin{scope}[yshift=-2.4cm]
-    \draw[-{Stealth}] (-0.5,0) -- (6.8,0);
-    \draw (0,0.12) -- (0,-0.12) node[below]{$m^2$};
-    \draw (5.2,0.12) -- (5.2,-0.12) node[below left=0pt and -6pt]{$m(m+2)$};
-    \draw (6.2,0.12) -- (6.2,-0.12) node[below right=0pt and -6pt]{$(m+1)^2$};
-    \fill (5.2,0) circle (2pt);
-    \draw[decorate,decoration={brace,amplitude=4pt}] (0,0.25) -- node[above=4pt]{$2m$} (5.2,0.25);
-    \draw[decorate,decoration={brace,amplitude=4pt}] (5.2,0.25) -- node[above=4pt]{$1$} (6.2,0.25);
+  \PacketInkPath[inkblue,line width=.6pt]{(f0.north) to[bend left=35] (f3.north)}
+  \node at (2.4,1.3) {\InkLabel[inkblue]{$n(n+3) = m$}};
+  \PacketInkPath[inkred,line width=.6pt]{(f1.south) to[bend right=40] (f2.south)}
+  \node at (2.4,-0.95) {\InkLabel[inkred]{$(n+1)(n+2) = m+2$}};
+  \begin{scope}[yshift=-2.5cm]
+    \draw[figaxis] (-0.5,0) -- (6.9,0);
+    \foreach \x in {0,5.2,6.2} \PacketInkPath[black]{(\x,0.12) -- (\x,-0.12)};
+    \node[below] at (0,-0.12) {\InkLabel{$m^2$}};
+    \node[below left=1pt and -8pt] at (5.2,-0.12) {\InkLabel{$m(m+2)$}};
+    \node[below right=1pt and -8pt] at (6.2,-0.12) {\InkLabel{$(m+1)^2$}};
+    \fill[inkred] (5.2,0) circle (1.6pt);
+    \draw[ink line,decorate,decoration={brace,amplitude=4pt}] (0,0.25) -- (5.2,0.25);
+    \node[above] at (2.6,0.4) {\InkLabel{$2m$}};
+    \draw[ink line,decorate,decoration={brace,amplitude=4pt}] (5.2,0.25) -- (6.2,0.25);
+    \node[above] at (5.7,0.4) {\InkLabel{$1$}};
   \end{scope}
 \end{tikzpicture}
-\captionof{figure}{Top: pair the outer factors and the inner factors; the two products differ by $2$.
-Bottom: the product $m(m+2)$ is $1$ short of $(m+1)^2$ and $2m$ past $m^2$, so it lies strictly
-between two consecutive squares.}
+\figcap{Top: the outer pair and the inner pair of factors have products $m$ and $m + 2$. Bottom: $m(m+2)$ is $2m$ past $m^2$ and $1$ short of $(m+1)^2$, so it lies strictly between two consecutive squares.}
 \end{fig}
 
-\begin{remark}
-  The strategies that found the idea were penultimate step (decide what kind of fact
-  would finish the problem) and get your hands dirty (find the specific square).
-  The crux move is ``pair the outer and inner factors.''
-\end{remark}
+\subsection{Argument by contradiction (P\&B \S1.1; ACPS \S2.3)}
 
-\section{Argument by contradiction}
+\begin{qbox}
+  Are there infinitely many primes? A list such as $2, 3, 5, 7, 11, 13$ can always be extended, but ``I keep finding more'' is not a proof. What can you do with the assumption that some finite list contains every prime?
+\end{qbox}
 
-\subsection{The method}
-To prove a statement $S$, assume $S$ is false and deduce something impossible.
-Then $S$ must be true.
+To prove a statement $S$, assume $S$ is false and deduce something impossible. Then $S$ must be true.
 
-\paragraph{When to use it.}
-Use contradiction when the \emph{negation} of the conclusion gives you something
-concrete to work with. Typical signs:
+Use contradiction when the \emph{negation} of the conclusion gives you something concrete to work with. Typical signs:
 \begin{itemize}
-  \ii the conclusion says something does \emph{not} exist or \emph{cannot} happen
-  (``there is no polynomial \ldots'', ``is irrational'');
-  then the negation gives you an object to study;
-  \ii the conclusion says there are \emph{infinitely many} of something;
-  then the negation gives you a finite list, and a finite list can be multiplied, added or maximized;
-  \ii the conclusion says \emph{some} object has a property;
-  then the negation says \emph{every} object fails it, which you may apply to any object you choose.
+  \ii the conclusion says something does \emph{not} exist or \emph{cannot} happen (``there is no polynomial \ldots'', ``is irrational''); then the negation gives you an object to study;
+  \ii the conclusion says there are \emph{infinitely many} of something; then the negation gives you a finite list, and a finite list can be multiplied, added or maximized;
+  \ii the conclusion says \emph{some} object has a property; then the negation says \emph{every} object fails it, which you may apply to any object you choose.
 \end{itemize}
-ACPS (\S2.3) puts it this way: ask ``What happens if I negate the conclusion?
-Do I get something I can work with?''
+ACPS (\S2.3) puts it this way: ask what happens if you negate the conclusion, and whether you get something you can work with.
 
-\subsection{Negating a statement correctly}
+\subsubsection*{Negating a statement correctly}
 Most errors in contradiction proofs come from a wrong negation. The basic rules:
 \begin{center}
 \begin{tabular}{ll}
@@ -186,790 +172,657 @@ Most errors in contradiction proofs come from a wrong negation. The basic rules:
 \end{tabular}
 \end{center}
 
-\paragraph{Cases that cause mistakes.}
-\begin{itemize}
-  \ii \emph{``If $A$ then $B$.''} The negation is ``$A$ and not $B$'', \emph{not} ``if $A$ then not $B$''.
-  Example: the negation of ``if $n$ is prime then $n$ is odd'' is ``some prime $n$ is even'' (true: $n = 2$).
-  \ii \emph{Several quantifiers.} Negate them one at a time from the left; each ``for every'' becomes
-  ``there is'' and the reverse. The negation of
-  ``for every $\eps > 0$ there is $\delta > 0$ such that $Q(\eps,\delta)$'' is
-  ``there is $\eps > 0$ such that for every $\delta > 0$, not $Q(\eps,\delta)$.''
-  The order of the quantifiers stays the same.
-  \ii \emph{Counting words.} ``At most one'' negates to ``at least two''.
-  ``Exactly one'' negates to ``none, or at least two'': two cases, and a proof must handle both.
-  ``Infinitely many'' negates to ``finitely many'', which includes \emph{none}; an empty list must
-  not break your argument.
-  \ii \emph{Strict and non-strict inequalities.} The negation of $x < y$ is $x \geq y$, not $x > y$.
-  The equality case is the one most often forgotten.
-\end{itemize}
+\begin{trapbox}
+  \ii \textbf{``If $A$ then $B$.''} The negation is ``$A$ and not $B$'', not ``if $A$ then not $B$''. The negation of ``if $n$ is prime then $n$ is odd'' is ``some prime $n$ is even'', which is true ($n = 2$).
+  \ii \textbf{Several quantifiers.} Negate them one at a time from the left; each ``for every'' becomes ``there is'' and the reverse, and the order stays the same. The negation of ``for every $\eps > 0$ there is $\delta > 0$ with $Q(\eps,\delta)$'' is ``there is $\eps > 0$ such that for every $\delta > 0$, not $Q(\eps,\delta)$.''
+  \ii \textbf{Counting words.} ``At most one'' negates to ``at least two''. ``Exactly one'' negates to ``none, or at least two'': two cases, and a proof must handle both. ``Infinitely many'' negates to ``finitely many'', which includes none; an empty list must not break the argument.
+  \ii \textbf{Strict and non-strict inequalities.} The negation of $x < y$ is $x \geq y$, not $x > y$. The equality case is the one most often forgotten.
+\end{trapbox}
 
-\subsection{Infinitely many primes}
+\subsubsection*{Infinitely many primes}
 
-\begin{theorem}[Euclid: there are infinitely many primes]\label{thm:euclid}
+\begin{theorem*}[Euclid: there are infinitely many primes]\target{thm-euclid}
   There are infinitely many prime numbers.
-\end{theorem}
-
-\paragraph{Investigation.}
-The conclusion is ``infinitely many'', so the negation gives a finite list
-$p_1, \dots, p_n$ of all primes. A finite list of numbers can be multiplied together.
-The product $p_1 \cdots p_n$ is divisible by every prime, so $p_1 \cdots p_n + 1$
-leaves remainder $1$ on division by each of them. But every integer greater than $1$ has a prime factor.
-
+\end{theorem*}
+\begin{ideabox}
+  The conclusion is ``infinitely many'', so the negation gives a finite list $p_1, \dots, p_n$ of all primes, and a finite list can be multiplied. The product $p_1 \cdots p_n$ is divisible by every prime, so $p_1 \cdots p_n + 1$ leaves remainder $1$ on division by each of them. But every integer greater than $1$ has a prime factor \ilink{T4}{(T4)}, and that factor cannot be on the list.
+\end{ideabox}
 \begin{proof}
-\begin{steps}
-  \ii Assume, for contradiction, that $p_1, \dots, p_n$ are all the primes. The list is not empty, since $2$ is prime.
-  \ii Let $N = p_1 p_2 \cdots p_n + 1$. Then $N \geq 3 > 1$, so $N$ has a prime factor $p$
-  (its smallest divisor greater than $1$ is prime, because a divisor of that divisor would be a smaller divisor of $N$).
-  \ii The prime $p$ is in the list, say $p = p_i$. Then $p$ divides both $N$ and $p_1 \cdots p_n$,
-  so it divides their difference, which is $1$. No prime divides $1$, a contradiction.
-\end{steps}
+  \begin{steps}
+    \ii Assume, for contradiction, that $p_1, \dots, p_n$ are all the primes. The list is not empty, since $2$ is prime.
+    \ii Let $N = p_1 p_2 \cdots p_n + 1$. Then $N \geq 3$, so $N$ has a prime factor $p$ by \ilink{T4}{(T4)}.
+    \ii By the assumption, $p$ is on the list, say $p = p_i$. Then $p$ divides both $N$ and $p_1 \cdots p_n$, so it divides their difference, which is $1$. No prime divides $1$, so this is a contradiction.
+  \end{steps}
 \end{proof}
 
-\paragraph{Trap: $N$ itself need not be prime.}
-With the first six primes, $N = 2\cdot3\cdot5\cdot7\cdot11\cdot13 + 1 = 30031 = 59 \cdot 509$.
-The proof never claims $N$ is prime. It claims only that $N$ has a prime factor that is not in the list.
-A write-up that says ``so $N$ is a new prime'' is wrong.
+The same idea, with one more twist, gives primes of a special form. First a definition and one fact.
 
-The same idea, with one more twist, gives primes of a special form.
-First a definition and one fact.
+\begin{definition*}[Congruence mod $4$]\target{def-mod4}
+  For integers $a, b$, write $a \equiv b \pmod 4$ if $4$ divides $a - b$. By \ilink{T1}{(T1)}, every integer is congruent mod $4$ to exactly one of $0, 1, 2, 3$, its remainder on division by $4$. An odd integer is congruent to $1$ or $3$.
+\end{definition*}
 
-\begin{definition}
-  For integers $a, b$, write $a \equiv b \pmod 4$ if $4$ divides $a - b$.
-  Every integer is congruent mod $4$ to exactly one of $0, 1, 2, 3$ (its remainder on division by $4$).
-  An odd integer is congruent to $1$ or $3$.
-\end{definition}
-
-\begin{fact}[Numbers $\equiv 1 \pmod 4$ are closed under multiplication]\label{fact:onemod4}
-  If $a \equiv 1$ and $b \equiv 1 \pmod 4$, then $ab \equiv 1 \pmod 4$.
-  Hence a product of any number of factors, each $\equiv 1 \pmod 4$, is $\equiv 1 \pmod 4$.
-\end{fact}
+\begin{fact*}[Numbers $\equiv 1 \pmod 4$ are closed under multiplication]\target{fact-onemod4}
+  If $a \equiv 1$ and $b \equiv 1 \pmod 4$, then $ab \equiv 1 \pmod 4$. Hence a product of any number of factors, each $\equiv 1 \pmod 4$, is $\equiv 1 \pmod 4$.
+\end{fact*}
 \begin{proof}
-Write $a = 4s + 1$ and $b = 4t + 1$. Then $ab = 16st + 4s + 4t + 1 = 4(4st + s + t) + 1$.
-For more factors, multiply them in one at a time; each multiplication keeps the product $\equiv 1 \pmod 4$.
+  Write $a = 4s + 1$ and $b = 4t + 1$. Then $ab = 16st + 4s + 4t + 1 = 4(4st + s + t) + 1$, so $ab \equiv 1 \pmod 4$. For more factors, multiply them in one at a time; each multiplication keeps the product $\equiv 1 \pmod 4$ by the two-factor case.
 \end{proof}
 
-\begin{example}[Infinitely many primes $\equiv 3 \pmod 4$]\label{ex:threemod4}
+\begin{example*}[Infinitely many primes $\equiv 3 \pmod 4$]\target{ex-threemod4}
   Prove that there are infinitely many primes $p$ with $p \equiv 3 \pmod 4$.
-\end{example}
+\end{example*}
 
-\paragraph{Investigation.}
-Copy \rref{thm:euclid}{Euclid's proof}: assume $p_1, \dots, p_k$ are all the primes $\equiv 3 \pmod 4$
-and build a number $N$ from them. Penultimate step: we want $N$ to have a prime factor $\equiv 3 \pmod 4$
-that is not in the list.
+Copy \ilink{thm-euclid}{Euclid's proof}: assume $p_1, \dots, p_k$ are all the primes $\equiv 3 \pmod 4$ and build a number $N$ from them. Penultimate step: we want $N$ to have a prime factor $\equiv 3 \pmod 4$ that is not in the list.
 
-Which $N$? Wishful thinking: we want $N$ to be forced to have a prime factor $\equiv 3$.
-By \rref{fact:onemod4}{the closure fact}, an odd number all of whose prime factors are $\equiv 1 \pmod 4$
-is itself $\equiv 1$. So an odd $N \equiv 3 \pmod 4$ must have a prime factor $\equiv 3$.
-The number $N = 4p_1 \cdots p_k - 1$ is odd, is $\equiv 3 \pmod 4$, and leaves remainder $p_i - 1$
-on division by each $p_i$, so no $p_i$ divides it.
+\begin{ideabox}
+  Which $N$? By \ilink{fact-onemod4}{the closure fact}, an odd number whose prime factors are all $\equiv 1 \pmod 4$ is itself $\equiv 1$. So an odd $N \equiv 3 \pmod 4$ is forced to have a prime factor $\equiv 3$. The number $N = 4p_1 \cdots p_k - 1$ is odd, is $\equiv 3 \pmod 4$, and leaves remainder $p_i - 1$ on division by each $p_i$, so no $p_i$ divides it.
+\end{ideabox}
 
-Get your hands dirty: with the list $3, 7, 11$, $N = 4 \cdot 231 - 1 = 923 = 13 \cdot 71$.
-The factor $13$ is $\equiv 1$; the factor $71$ is a new prime $\equiv 3$. So $N$ can have prime factors
-of both kinds, and the argument must find the one $\equiv 3$.
+Get your hands dirty: with the list $3, 7, 11$, $N = 4 \cdot 231 - 1 = 923 = 13 \cdot 71$. The factor $13$ is $\equiv 1$; the factor $71$ is a new prime $\equiv 3$. So $N$ can have prime factors of both kinds, and the argument must find the one $\equiv 3$.
 
 \begin{proof}
-\begin{steps}
-  \ii Assume, for contradiction, that $p_1, \dots, p_k$ are all the primes $\equiv 3 \pmod 4$.
-  The list is not empty, since $3$ is such a prime.
-  \ii Let $N = 4p_1 p_2 \cdots p_k - 1$. Then $N \geq 11$, $N$ is odd, and $N \equiv -1 \equiv 3 \pmod 4$.
-  \ii Every prime factor of $N$ is odd (since $N$ is odd), so it is $\equiv 1$ or $\equiv 3 \pmod 4$.
-  If all of them were $\equiv 1$, then $N$, as their product (with repetition), would be $\equiv 1$
-  by \rref{fact:onemod4}{the closure fact}. Since $N \equiv 3$, some prime factor $q$ of $N$ is $\equiv 3 \pmod 4$.
-  \ii By the assumption, $q = p_i$ for some $i$. Then $q$ divides $N$ and $4p_1 \cdots p_k$,
-  so it divides their difference $1$, a contradiction.
-\end{steps}
+  \begin{steps}
+    \ii Assume, for contradiction, that $p_1, \dots, p_k$ are all the primes $\equiv 3 \pmod 4$. The list is not empty, since $3$ is such a prime.
+    \ii Let $N = 4p_1 p_2 \cdots p_k - 1$. Then $N \geq 11$, $N$ is odd, and $N \equiv -1 \equiv 3 \pmod 4$.
+    \ii Every prime factor of $N$ is odd, because $N$ is odd, so each is $\equiv 1$ or $\equiv 3 \pmod 4$. If all of them were $\equiv 1$, then $N$, which is their product (with repetition), would be $\equiv 1$ by \ilink{fact-onemod4}{the closure fact}. Since $N \equiv 3$, some prime factor $q$ of $N$ is $\equiv 3 \pmod 4$.
+    \ii By the assumption, $q = p_i$ for some $i$. Then $q$ divides $N$ and $4p_1 \cdots p_k$, so it divides their difference $1$, a contradiction.
+  \end{steps}
 \end{proof}
 
-\paragraph{Trap: the same proof does not work for primes $\equiv 1 \pmod 4$.}
-A number $\equiv 1 \pmod 4$ can have all its prime factors $\equiv 3$: for example $21 = 3 \cdot 7$.
-So building $N \equiv 1$ forces nothing. (Infinitely many primes $\equiv 1 \pmod 4$ do exist,
-but the known proofs need tools from later in the course.)
-Before you reuse a proof, find the step that used the special feature and check that it still holds.
+\begin{trapbox}
+  \ii \textbf{$N$ itself need not be prime.} With the first six primes, Euclid's number is $2\cdot3\cdot5\cdot7\cdot11\cdot13 + 1 = 30031 = 59 \cdot 509$. The proof claims only that $N$ has a prime factor that is not on the list. A write-up that says ``so $N$ is a new prime'' is wrong.
+  \ii \textbf{The mod-$4$ proof does not work for primes $\equiv 1 \pmod 4$.} A number $\equiv 1 \pmod 4$ can have all its prime factors $\equiv 3$: for example $21 = 3 \cdot 7$. So building $N \equiv 1$ forces nothing. (Infinitely many primes $\equiv 1 \pmod 4$ do exist, but the known proofs need tools from later in the course.) Before you reuse a proof, find the step that used the special feature and check that it still holds.
+\end{trapbox}
 
-\subsection{Integer polynomials}
+\subsubsection*{Integer polynomials}
 Two tools about polynomials are used all through the course.
 
-\begin{fact}[Difference divisibility for integer polynomials]\label{fact:poly}
-  Let $P$ be a polynomial with integer coefficients and let $a, b$ be integers.
-  Then $a - b$ divides $P(a) - P(b)$.
-\end{fact}
+\begin{fact*}[Difference divisibility for integer polynomials]\target{fact-poly}
+  Let $P$ be a polynomial with integer coefficients and let $a, b$ be integers. Then $a - b$ divides $P(a) - P(b)$.
+\end{fact*}
 \begin{proof}
-\begin{steps}
-  \ii Write $P(x) = \sum_{j=0}^{d} c_j x^j$ with integers $c_j$. Then
-  \[ P(a) - P(b) = \sum_{j=1}^{d} c_j (a^j - b^j), \]
-  since the $j = 0$ terms cancel.
-  \ii For $j \geq 1$, $a^j - b^j = (a-b)(a^{j-1} + a^{j-2}b + \dots + b^{j-1})$; expand the right side to check
-  that all terms cancel except $a^j$ and $-b^j$. The second factor is an integer.
-  \ii So each term $c_j(a^j - b^j)$ is $a - b$ times an integer, and so is their sum.
-\end{steps}
+  \begin{steps}
+    \ii Write $P(x) = \sum_{j=0}^{d} c_j x^j$ with integers $c_j$. The constant terms cancel in the difference, so
+    \[ P(a) - P(b) = \sum_{j=1}^{d} c_j (a^j - b^j). \]
+    \ii For each $j \geq 1$, \ilink{T5}{(T5)} writes $a^j - b^j$ as $a - b$ times the integer $a^{j-1} + a^{j-2}b + \dots + b^{j-1}$.
+    \ii So each term $c_j(a^j - b^j)$ is $a - b$ times an integer, and so is their sum $P(a) - P(b)$.
+  \end{steps}
 \end{proof}
 
-\begin{fact}[A nonzero polynomial has finitely many roots]\label{fact:roots}
-  A polynomial of degree $d \geq 0$ that is not the zero polynomial has at most $d$ real roots.
-  Consequently, a nonconstant polynomial takes each value only finitely many times.
-\end{fact}
+\begin{fact*}[A nonzero polynomial has finitely many roots]\target{fact-roots}
+  A polynomial of degree $d \geq 0$ that is not the zero polynomial has at most $d$ real roots. Consequently, a nonconstant polynomial takes each value only finitely many times.
+\end{fact*}
 \begin{proof}
-\begin{steps}
-  \ii If $P(r) = 0$, then $P(x) = P(x) - P(r) = \sum_j c_j(x^j - r^j)$, and each $x^j - r^j$ has the factor $x - r$
-  (as in \rref{fact:poly}{difference divisibility}, now with $x$ a variable). So $P(x) = (x - r)Q(x)$ with $\deg Q = d - 1$.
-  \ii If $r_1, \dots, r_m$ are distinct roots, factor out $x - r_1$; the other roots are roots of the quotient,
-  because $(r_i - r_1) \neq 0$. Repeating, $P(x) = (x-r_1)\cdots(x-r_m)R(x)$ with $R \neq 0$, so $m \leq d$.
-  \ii If $P$ is nonconstant and $P(x) = v$ for infinitely many $x$, then $P(x) - v$ is a nonzero polynomial
-  (it has positive degree) with infinitely many roots, which Step 2 rules out.
-\end{steps}
+  \begin{steps}
+    \ii Suppose $P(r) = 0$. Then $P(x) = P(x) - P(r) = \sum_j c_j(x^j - r^j)$, and by \ilink{T5}{(T5)}, now with $x$ a variable, each $x^j - r^j$ has the factor $x - r$. So $P(x) = (x - r)Q(x)$ for a polynomial $Q$ of degree $d - 1$.
+    \ii Suppose $r_1, \dots, r_m$ are distinct roots. Step~1 gives $P(x) = (x - r_1)Q_1(x)$. For $i \geq 2$ we have $0 = P(r_i) = (r_i - r_1)Q_1(r_i)$ and $r_i - r_1 \neq 0$, so $r_i$ is a root of $Q_1$. Repeating Step~1 for $Q_1$, then for its quotient, and so on, gives $P(x) = (x-r_1)\cdots(x-r_m)R(x)$ with $R$ not the zero polynomial (because $P$ is not). Comparing degrees, $m \leq d$.
+    \ii If $P$ is nonconstant and $P(x) = v$ for infinitely many $x$, then $P(x) - v$ is a polynomial of positive degree, hence not the zero polynomial, with infinitely many roots. Step~2 rules this out.
+  \end{steps}
 \end{proof}
 
-\begin{example}[P\&B \S1.1; Euler]\label{ex:euler}
-  Prove that there is no polynomial $P$ with integer coefficients and degree at least $1$
-  such that $P(0), P(1), P(2), \dots$ are all prime.
-\end{example}
+\begin{example*}[P\&B \S1.1; Euler: no polynomial takes only prime values]\target{ex-euler}
+  Prove that there is no polynomial $P$ with integer coefficients and degree at least $1$ such that $P(0), P(1), P(2), \dots$ are all prime.
+\end{example*}
 
-\paragraph{Investigation.}
-The conclusion says ``there is no polynomial'', so assume there is one and study it.
-Penultimate step: to get a contradiction, it is enough to find one $n \geq 0$ with $P(n)$ not prime.
+The conclusion says ``there is no polynomial'', so assume there is one and study it. Penultimate step: to get a contradiction, it is enough to find one $n \geq 0$ with $P(n)$ not prime.
 
-Get your hands dirty with a famous near-example, $P(x) = x^2 + x + 41$, which is prime for
-$x = 0, 1, \dots, 39$. Where does it fail? At $x = 40$: $40^2 + 40 + 41 = 41^2$.
-And at $x = 41$: $41^2 + 41 + 41 = 41 \cdot 43$. The failure involves $41$, which is $P(0)$.
-Try another: $P(x) = 2x + 3$. Then $P(0) = 3$ and $P(3) = 9 = 3 \cdot 3$. Again the value
-$P(0)$ divides a later value.
+Get your hands dirty with a famous near-example, $P(x) = x^2 + x + 41$, which is prime for $x = 0, 1, \dots, 39$. It fails at $x = 40$, where $40^2 + 40 + 41 = 41^2$, and at $x = 41$, where $41^2 + 41 + 41 = 41 \cdot 43$. The failure involves $41$, which is $P(0)$. Try another: $P(x) = 2x + 3$ has $P(0) = 3$ and $P(3) = 9 = 3 \cdot 3$. Again the value $P(0)$ divides a later value.
 
-So the guess is: $p = P(0)$ divides $P(p)$, $P(2p)$, $P(3p), \dots$.
-This is \rref{fact:poly}{difference divisibility} with $a = kp$, $b = 0$.
-If all values are prime, a prime divisible by $p$ must equal $p$. So $P$ takes the value $p$
-infinitely often, which \rref{fact:roots}{the finite-roots fact} forbids.
+\begin{ideabox}
+  The guess is that $p = P(0)$ divides $P(p), P(2p), P(3p), \dots$. This is \ilink{fact-poly}{difference divisibility} with $a = kp$ and $b = 0$. If all values are prime, a prime divisible by $p$ must equal $p$. So $P$ takes the value $p$ infinitely often, which \ilink{fact-roots}{the finite-roots fact} forbids.
+\end{ideabox}
 
 \begin{proof}
-\begin{steps}
-  \ii Assume, for contradiction, that such a $P$ exists. Let $p = P(0)$; by assumption $p$ is prime.
-  \ii For each integer $k \geq 1$, \rref{fact:poly}{difference divisibility} with $a = kp$, $b = 0$
-  gives $kp \mid P(kp) - P(0)$, so $p \mid P(kp) - p$ and hence $p \mid P(kp)$.
-  \ii $P(kp)$ is a prime divisible by the prime $p$, so $P(kp) = p$, for every $k \geq 1$.
-  \ii Then the nonconstant polynomial $P$ takes the value $p$ at the infinitely many points $p, 2p, 3p, \dots$,
-  contradicting \rref{fact:roots}{the finite-roots fact}.
-\end{steps}
+  \begin{steps}
+    \ii Assume, for contradiction, that such a $P$ exists. Let $p = P(0)$; by the assumption, $p$ is prime.
+    \ii Let $k \geq 1$. By \ilink{fact-poly}{difference divisibility} with $a = kp$ and $b = 0$, $kp$ divides $P(kp) - P(0) = P(kp) - p$. In particular $p$ divides $P(kp) - p$, and hence $p$ divides $P(kp)$.
+    \ii By the assumption $P(kp)$ is a prime, and it is divisible by the prime $p$, so $P(kp) = p$. This holds for every $k \geq 1$.
+    \ii So the nonconstant polynomial $P$ takes the value $p$ at the infinitely many points $p, 2p, 3p, \dots$, which contradicts \ilink{fact-roots}{the finite-roots fact}.
+  \end{steps}
 \end{proof}
 
 \begin{fig}
 \begin{tikzpicture}
 \begin{axis}[
-  width=0.62\linewidth, height=5.2cm,
-  axis lines=left, xmin=-0.5, xmax=10.5, ymin=0, ymax=24,
+  width=0.56\linewidth, height=4.8cm,
+  axis lines*=left, xmin=-0.5, xmax=10.5, ymin=0, ymax=24,
   xtick={0,3,6,9}, xticklabels={$0$,$p$,$2p$,$3p$},
   ytick={3,9,15,21}, yticklabels={$p$,$9$,$15$,$21$},
-  xlabel={$x$}, ylabel={$P(x)$}, every axis label/.style={font=\small},
+  xlabel={$x$}, ylabel={$P(x)$}, ylabel style={rotate=-90},
+  tick label style={font=\scriptsize}, label style={font=\small},
   clip=false]
-  \addplot[domain=0:10.5, thick] {2*x+3};
-  \addplot[domain=-0.5:10.5, dashed, gray] {3};
-  \addplot[only marks, mark=*, mark size=2pt] coordinates {(0,3) (3,9) (6,15) (9,21)};
-  \node[below right, font=\small] at (axis cs:3,9)  {$9 = 3\cdot 3$};
-  \node[below right, font=\small] at (axis cs:6,15) {$15 = 3\cdot 5$};
-  \node[below right, font=\small] at (axis cs:9,21) {$21 = 3\cdot 7$};
-  \node[above right, font=\small, gray] at (axis cs:6.6,3) {the line $y = p$};
+  \addplot[ink guide,draw=inkslate,domain=-0.5:10.5] {3};
+  \addplot[ink plot,draw=inkblue,domain=0:10.5,samples=2] {2*x+3};
+  \addplot[only marks,mark=inkdot,inkred] coordinates {(0,3) (3,9) (6,15) (9,21)};
+  \node[anchor=north west,font=\scriptsize] at (axis cs:3.1,8.6) {\InkLabel{$9 = 3\cdot 3$}};
+  \node[anchor=north west,font=\scriptsize] at (axis cs:6.1,14.6) {\InkLabel{$15 = 3\cdot 5$}};
+  \node[anchor=north west,font=\scriptsize] at (axis cs:9.1,20.6) {\InkLabel{$21 = 3\cdot 7$}};
+  \node[anchor=south,font=\scriptsize,text=inkslate] at (axis cs:8,3.3) {\InkLabel{$y = p$}};
 \end{axis}
 \end{tikzpicture}
-\captionof{figure}{$P(x) = 2x + 3$, so $p = P(0) = 3$. Every value $P(kp)$ is a multiple of $p$.
-If all of them were prime, every marked point would have to lie on the dashed line $y = p$.
-A nonconstant polynomial meets a horizontal line only finitely many times.}
+\figcap{$P(x) = 2x + 3$, so $p = P(0) = 3$. Each red value $P(kp)$ is a multiple of $p$; if all of them were prime they would all lie on the dotted line $y = p$, which a nonconstant polynomial meets only finitely often.}
 \end{fig}
 
-\begin{remark}[Edge case: $P(0) = p$ must be used as a prime]
-  The proof needs $p \ge 2$. If the problem allowed $P(0) = 1$ (not prime), Step 3 would fail,
-  because a prime divisible by $1$ can be any prime. Always check which hypothesis each step uses.
-\end{remark}
+\begin{trapbox}
+  \ii \textbf{The proof uses that $P(0)$ is prime.} If $P(0) = 1$ were allowed, Step~3 would fail, because a prime divisible by $1$ can be any prime. Check which hypothesis each step uses.
+\end{trapbox}
 
-\subsection{Rational roots and parity}
-A common contradiction pattern: to show a number is irrational, write it as a fraction in lowest terms,
-clear denominators, and look at the resulting integer equation modulo $2$ (parity).
+\subsubsection*{Rational roots and parity}
+A common contradiction pattern: to show a number is irrational, write it as a fraction in lowest terms, clear denominators, and look at the resulting integer equation modulo $2$ (parity).
 
-\begin{example}[No rational root of $x^5 + x + 1$]\label{ex:parity}
+\begin{example*}[No rational root of $x^5 + x + 1$]\target{ex-parity}
   Prove that the equation $x^5 + x + 1 = 0$ has no rational solution.
-\end{example}
-
-\paragraph{Investigation.}
-Assume $x = p/q$ is a solution, with $q \geq 1$ and the fraction in lowest terms.
-Multiplying by $q^5$ gives the integer equation $p^5 + pq^4 + q^5 = 0$.
-Penultimate step: an integer equation $E = 0$ is impossible if $E$ is odd, since $0$ is even.
-``Lowest terms'' means $p$ and $q$ are not both even, which leaves three parity cases. Check each.
-
+\end{example*}
+\begin{ideabox}
+  Write a solution as $p/q$ in lowest terms and multiply by $q^5$: the integer equation is $p^5 + pq^4 + q^5 = 0$. An integer expression equal to $0$ must be even. ``Lowest terms'' means $p$ and $q$ are not both even, which leaves three parity cases; if every case makes the left side odd, we are done.
+\end{ideabox}
 \begin{proof}
-\begin{steps}
-  \ii Assume, for contradiction, that $x = p/q$ is a root, with integers $p$, $q \geq 1$ and $p/q$ in lowest terms.
-  Then $p$ and $q$ are not both even.
-  \ii Multiplying $x^5 + x + 1 = 0$ by $q^5$: $p^5 + pq^4 + q^5 = 0$.
-  \ii Case $p$, $q$ both odd: the three terms are odd, odd, odd, and their sum is odd.
-  Case $p$ even, $q$ odd: the terms are even, even, odd; the sum is odd.
-  Case $p$ odd, $q$ even: the terms are odd, even, even; the sum is odd.
-  \ii In every case $p^5 + pq^4 + q^5$ is odd, so it is not $0$. This contradicts Step 2.
-\end{steps}
+  \begin{steps}
+    \ii Assume, for contradiction, that $x = p/q$ is a root, with integers $p$, $q \geq 1$ and $p/q$ in lowest terms. Then $p$ and $q$ are not both even.
+    \ii Multiplying $x^5 + x + 1 = 0$ by $q^5$ gives $p^5 + pq^4 + q^5 = 0$.
+    \ii If $p$ and $q$ are both odd, the three terms are odd, odd and odd, and their sum is odd. If $p$ is even and $q$ is odd, the terms are even, even and odd, and the sum is odd. If $p$ is odd and $q$ is even, the terms are odd, even and even, and the sum is odd.
+    \ii In every case $p^5 + pq^4 + q^5$ is odd, so it is not $0$. This contradicts Step~2.
+  \end{steps}
 \end{proof}
 
-\begin{remark}[When parity is not enough]
-  The parity check works when every case gives an odd total. For $x^2 - 2$ it does work
-  ($p^2 = 2q^2$ forces $p$ even, then $q$ even, contradicting lowest terms), but for $x^2 + x - 6$
-  it cannot, because $x = 2$ is a root. If one parity case does not lead to a contradiction,
-  look for a rational root in that case before trying harder.
-\end{remark}
+\begin{trapbox}
+  \ii \textbf{Parity is not always enough.} For $x^2 - 2$ it works ($p^2 = 2q^2$ forces $p$ even, then $q$ even, contradicting lowest terms), but for $x^2 + x - 6$ it cannot, because $x = 2$ is a root. If one parity case does not give a contradiction, look for a rational root in that case before trying harder.
+\end{trapbox}
 
-\subsection{A combinatorial example}
+\subsubsection*{A combinatorial example}
 
-\begin{example}[P\&B \S1.1; Tomescu]\label{ex:tomescu}
-  Let $\SF = \{E_1, E_2, \dots, E_s\}$ be a family of subsets of a set $X$, each with exactly $r$
-  elements. Suppose that any $r+1$ sets in $\SF$ (not necessarily distinct) have nonempty intersection.
-  Prove that the intersection of all the sets in $\SF$ is nonempty.
-\end{example}
+\begin{example*}[P\&B \S1.1; Tomescu: sets that pairwise share points]\target{ex-tomescu}
+  Let $\mathcal F = \{E_1, E_2, \dots, E_s\}$ be a family of subsets of a set $X$, each with exactly $r$ elements. Suppose that any $r+1$ sets in $\mathcal F$ (not necessarily distinct) have nonempty intersection. Prove that the intersection of all the sets in $\mathcal F$ is nonempty.
+\end{example*}
 
-\paragraph{Investigation.}
-Make it easier: take $r = 1$. Each set is a single point, and any two of them intersect,
-so any two are equal. Then all sets are the same point and the total intersection is that point.
+Make it easier: take $r = 1$. Each set is a single point, and any two of them intersect, so any two are equal. Then all sets are the same point and the total intersection is that point.
 
-For general $r$, negate the conclusion: the total intersection is empty.
-That means: \emph{every} element $x$ is missing from \emph{some} set in $\SF$.
-This is a statement about every element, which we can apply to chosen elements.
+For general $r$, negate the conclusion: the total intersection is empty. That means \emph{every} element $x$ is missing from \emph{some} set in $\mathcal F$. This is a statement about every element, which we can apply to elements we choose.
 
-Penultimate step: to contradict the hypothesis, we need $r+1$ sets with empty intersection.
-If one of the sets is $E_1$, the intersection is already inside $E_1$, so we only need to exclude
-the $r$ elements of $E_1$. Each of them is missing from some set. That gives $r$ more sets, and
-$1 + r$ sets in total. The count matches the $r+1$ in the hypothesis exactly,
-which is good evidence that this is the intended argument.
+\begin{ideabox}
+  Penultimate step: to contradict the hypothesis we need $r+1$ sets with empty intersection. If one of the sets is $E_1$, the intersection already lies inside $E_1$, so we only need to exclude the $r$ elements of $E_1$. Each of those elements is missing from some set. That gives $r$ more sets, $1 + r$ in total. The count matches the $r+1$ in the hypothesis exactly, which is good evidence that this is the intended argument.
+\end{ideabox}
 
 \begin{proof}
-\begin{steps}
-  \ii Assume, for contradiction, that $\bigcap_{j} E_j = \varnothing$. Write $E_1 = \{x_1, \dots, x_r\}$.
-  \ii For each $i$, the element $x_i$ is not in every set of $\SF$,
-  so there is a set $E_{j_i} \in \SF$ with $x_i \notin E_{j_i}$.
-  \ii Consider the $r+1$ sets $E_1, E_{j_1}, \dots, E_{j_r}$ (some may coincide, which the hypothesis allows).
-  Their intersection is contained in $E_1$, and it contains none of $x_1, \dots, x_r$,
-  since $x_i \notin E_{j_i}$. So it is empty.
-  \ii This contradicts the hypothesis that any $r+1$ sets of $\SF$ have nonempty intersection.
-\end{steps}
+  \begin{steps}
+    \ii Assume, for contradiction, that $\bigcap_{j} E_j = \varnothing$. Write $E_1 = \{x_1, \dots, x_r\}$.
+    \ii For each $i$, the element $x_i$ is not in every set of $\mathcal F$, so there is a set $E_{j_i} \in \mathcal F$ with $x_i \notin E_{j_i}$.
+    \ii Consider the $r+1$ sets $E_1, E_{j_1}, \dots, E_{j_r}$; some may coincide, which the hypothesis allows. Their intersection is contained in $E_1$, and it contains none of $x_1, \dots, x_r$, since $x_i \notin E_{j_i}$. So the intersection is empty.
+    \ii This contradicts the hypothesis that any $r+1$ sets of $\mathcal F$ have nonempty intersection.
+  \end{steps}
 \end{proof}
 
 \begin{fig}
-\begin{tikzpicture}[x=1.1cm,y=0.75cm]
-  \foreach \j/\lab in {1/x_1,2/x_2,3/x_3,4/x_4}
-    \node at (\j,0.9) {$\lab$};
-  \foreach \i/\lab in {0/E_1,1/E_{j_1},2/E_{j_2},3/E_{j_3},4/E_{j_4}}
-    \node[anchor=east] at (0.4,-\i) {$\lab$};
+\begin{tikzpicture}[x=1.05cm,y=0.72cm]
+  \foreach \i in {1,...,4} \InkRegion[inkred]{(\i-0.42,-\i-0.38) rectangle (\i+0.42,-\i+0.38)};
+  \foreach \j/\lab in {1/x_1,2/x_2,3/x_3,4/x_4} \node at (\j,0.95) {$\lab$};
+  \foreach \i/\lab in {0/E_1,1/E_{j_1},2/E_{j_2},3/E_{j_3},4/E_{j_4}} \node[anchor=east] at (0.45,-\i) {$\lab$};
   \foreach \j in {1,...,4} \node at (\j,0) {$\in$};
   \foreach \i in {1,...,4} {
     \foreach \j in {1,...,4} {
-      \ifnum\i=\j
-        \fill[gray!30] (\j-0.45,-\i-0.4) rectangle (\j+0.45,-\i+0.4);
-        \node at (\j,-\i) {$\notin$};
-      \else
-        \node[gray] at (\j,-\i) {$\cdot$};
-      \fi
+      \ifnum\i=\j \node at (\j,-\i) {\InkLabel{$\notin$}};
+      \else \node[text=inkslate] at (\j,-\i) {$\cdot$}; \fi
     }
   }
-  \draw (0.5,0.45) -- (4.5,0.45);
-  \draw (0.5,-0.5) -- (4.5,-0.5);
+  \PacketInkPath[black]{(0.5,0.48) -- (4.5,0.48)}
+  \PacketInkPath[black]{(0.5,-0.5) -- (4.5,-0.5)}
 \end{tikzpicture}
-\captionof{figure}{The case $r = 4$. Columns are the elements of $E_1$; rows are the $r + 1$ chosen sets.
-Row $E_{j_i}$ is chosen to miss $x_i$ (shaded). Every element of $E_1$ is missed by some row,
-and elements outside $E_1$ are missed by row $E_1$, so the $r + 1$ sets have empty intersection.
-The dots mean ``may or may not be in the set''; the argument does not need to know.}
+\figcap{The case $r = 4$. Columns are the elements of $E_1$, rows the $r + 1$ chosen sets; row $E_{j_i}$ misses $x_i$ (red). Every element of $E_1$ is missed by some row and every other element is missed by row $E_1$, so the intersection is empty. A dot means the entry does not matter.}
 \end{fig}
 
-\begin{remark}
-  The numbers in a problem statement are information. Here ``$r+1$'' told us how many sets
-  to build. If your argument never uses a number or a hypothesis from the statement,
-  check whether the argument is wrong or the statement is stronger than needed.
-\end{remark}
+\begin{remark*}[Numbers in a statement are information]
+  Here ``$r+1$'' told us how many sets to build. If your argument never uses a number or a hypothesis from the statement, check whether the argument is wrong or the statement is stronger than needed.
+\end{remark*}
 
-\subsection{Contradiction or contrapositive?}
-The \vocab{contrapositive} of ``if $A$ then $B$'' is ``if not $B$ then not $A$''.
-They are logically equivalent. Many proofs written as contradictions are really contrapositive
-proofs: they assume not $B$, deduce not $A$ directly, and then say ``contradiction''.
-Write those as contrapositive proofs. They are shorter and clearer.
-A real contradiction proof uses the false assumption together with other facts and
-reaches an impossibility in the middle of the argument, as in the proofs above.
+\subsubsection*{Contradiction or contrapositive?}
+The \textbf{contrapositive} of ``if $A$ then $B$'' is ``if not $B$ then not $A$''. The two statements are logically equivalent. Many proofs written as contradictions are really contrapositive proofs: they assume not $B$, deduce not $A$ directly, and then say ``contradiction''. Write those as contrapositive proofs; they are shorter and clearer. A real contradiction proof uses the false assumption together with other facts and reaches an impossibility in the middle of the argument, as in the proofs above.
 
-\section{Mathematical induction}
+\subsection{Mathematical induction (P\&B \S1.2; ACPS \S2.3; Engel Ch.~8)}\label{sec:induction}
 
-\subsection{The method}
-\begin{theorem}[Induction principle]\label{thm:induction}
+\begin{qbox}
+  Check that $5 \mid 1^5 - 1$, $5 \mid 2^5 - 2 = 30$, $5 \mid 3^5 - 3 = 240$. Does $p$ divide $n^p - n$ for every prime $p$ and every $n$? Checking cases one at a time never ends; we need a way to prove infinitely many statements at once.
+\end{qbox}
+
+\begin{theorem*}[Induction principle]\target{thm-induction}
   Let $P(n)$ be a statement depending on an integer $n$, and let $n_0$ be an integer. Suppose
-  \begin{enumerate}[(i)]
-    \ii $P(n_0)$ is true (\vocab{base case}), and
-    \ii for every integer $k \geq n_0$, if $P(k)$ is true then $P(k+1)$ is true (\vocab{inductive step}).
+  \begin{enumerate}
+    \ii[(i)] $P(n_0)$ is true (the \textbf{base case}), and
+    \ii[(ii)] for every integer $k \geq n_0$, if $P(k)$ is true then $P(k+1)$ is true (the \textbf{inductive step}).
   \end{enumerate}
   Then $P(n)$ is true for all integers $n \geq n_0$.
-\end{theorem}
-The base case proves the first statement, and the step proves each implication
-$P(k) \Rightarrow P(k+1)$. Following the implications from $P(n_0)$ reaches every $P(n)$ with $n \geq n_0$.
-Both parts are required. In the step, $k$ is arbitrary: you may use only $P(k)$ and $k \geq n_0$.
+\end{theorem*}
+\begin{proof}
+  \begin{steps}
+    \ii Assume (i) and (ii), and suppose, for contradiction, that $P(n)$ fails for some $n \geq n_0$. The set of positive integers $n - n_0 + 1$ for such $n$ is nonempty, so by \ilink{T2}{(T2)} there is a smallest failing $n$, call it $m$.
+    \ii $m \neq n_0$, because $P(n_0)$ is true by (i). So $m - 1 \geq n_0$, and $P(m-1)$ is true because $m$ is the smallest failure.
+    \ii Applying (ii) with $k = m - 1$ gives $P(m)$, a contradiction.
+  \end{steps}
+\end{proof}
+
+The base case proves the first statement, and the step proves every implication $P(k) \Rightarrow P(k+1)$ at once. Following the implications from $P(n_0)$ reaches every $P(n)$ with $n \geq n_0$. Both parts are required. In the step, $k$ is arbitrary: you may use only $P(k)$ and $k \geq n_0$.
 
 \begin{fig}
-\begin{tikzpicture}[box/.style={draw, rounded corners=2pt, minimum width=1.55cm, minimum height=0.7cm},
-                    node distance=0.75cm]
-  \node[box, fill=gray!25] (a) {$P(n_0)$};
-  \node[box, right=of a] (b) {$P(n_0{+}1)$};
-  \node[box, right=of b] (c) {$P(n_0{+}2)$};
+\begin{tikzpicture}[node distance=0.78cm,box/.style={minimum width=1.55cm,minimum height=0.68cm}]
+  \node[box] (a) {$P(n_0)$};
+  \node[box,right=of a] (b) {$P(n_0{+}1)$};
+  \node[box,right=of b] (c) {$P(n_0{+}2)$};
   \node[right=of c] (d) {$\cdots$};
-  \node[box, right=of d] (e) {$P(n)$};
-  \foreach \u/\v in {a/b,b/c,c/d,d/e} \draw[-{Stealth},thick] (\u) -- node[above,font=\scriptsize]{step} (\v);
-  \node[below=0.15cm of a, font=\scriptsize] {base case};
+  \node[box,right=of d] (e) {$P(n)$};
+  \begin{scope}[on background layer]
+    \InkRegion[inkblue]{([xshift=1pt,yshift=1pt]a.south west) rectangle ([xshift=-1pt,yshift=-1pt]a.north east)}
+  \end{scope}
+  \foreach \u in {a,b,c,e} \PacketInkPath[black]{(\u.south west) rectangle (\u.north east)};
+  \foreach \u/\v in {a/b,b/c,c/d,d/e} \draw[ink arrow] (\u) -- (\v);
+  \foreach \u/\v in {a/b,b/c,c/d,d/e} \node[font=\scriptsize] at ($(\u.east)!0.5!(\v.west)+(0,0.22)$) {step};
+  \node[below=1pt of a,font=\scriptsize] {base case};
 \end{tikzpicture}
-\captionof{figure}{The base case proves the shaded statement. One inductive step, proved for arbitrary $k$,
-supplies every arrow at once.}
+\figcap{The base case proves the blue statement; one inductive step, proved for an arbitrary $k$, supplies every arrow.}
 \end{fig}
 
-\paragraph{How to write it.}
+\Needspace{8\baselineskip}
+\noindent\textbf{How to write an induction proof.}
 \begin{enumerate}
   \ii State $P(n)$ as one exact sentence, including the range of $n$.
   \ii Prove the base case $P(n_0)$, by computation if possible.
   \ii Write ``Assume $P(k)$ for some $k \ge n_0$'' and then prove $P(k+1)$. Mark the place where you use $P(k)$.
 \end{enumerate}
 
-\paragraph{When to use it.}
-Use induction when the statement is indexed by an integer, or when the objects in the problem
-can be \emph{built up} one piece at a time (add one line, one element, one vertex)
-and the property is preserved at each piece. Most of the skill is in the inductive step.
-The next five subsections give five ways to find the step.
+Use induction when the statement is indexed by an integer, or when the objects in the problem can be \emph{built up} one piece at a time (add one line, one element, one vertex) and the property is preserved at each piece. Most of the skill is in the inductive step. The next five parts give five ways to find the step.
 
-\subsection{Find $P(k)$ inside $P(k+1)$}
-The penultimate step for an inductive step is: \emph{write $P(k+1)$ and look for a copy of $P(k)$ in it.}
-Whatever is left over is what you must handle.
+\subsubsection*{Way 1: find $P(k)$ inside $P(k+1)$}
+The penultimate step for an inductive step is: write $P(k+1)$ and look for a copy of $P(k)$ in it. Whatever is left over is what you must handle. The example is Fermat's little theorem, which needs two facts about primes first.
 
-The next proof needs one basic fact about primes. Its proof uses the
-\vocab{well-ordering principle}: every nonempty set of positive integers has a smallest element.
-
-\begin{lemma}[Euclid's lemma: a prime dividing a product divides a factor]\label{lem:euclidlemma}
-  Let $p$ be a prime and $a, b$ positive integers. If $p \mid ab$, then $p \mid a$ or $p \mid b$.
-  Hence if $p$ divides a product of several positive integers, it divides one of them.
-\end{lemma}
+\begin{lemma*}[Euclid's lemma: a prime dividing a product divides a factor]\target{lem-euclid}
+  Let $p$ be a prime and $a, b$ positive integers. If $p \mid ab$, then $p \mid a$ or $p \mid b$. Hence if $p$ divides a product of several positive integers, it divides one of them.
+\end{lemma*}
+\begin{ideabox}
+  Look at all multipliers $x$ for which $p \mid xb$. This set contains $p$ and $a$, and it is closed under subtraction. Its smallest element therefore divides every element, in particular $p$ and $a$. Since $p \nmid a$, that smallest element cannot be $p$, so it is $1$, which says $p \mid b$.
+\end{ideabox}
 \begin{proof}
-Assume $p \mid ab$ and $p \nmid a$; we show $p \mid b$.
-\begin{steps}
-  \ii Let $S$ be the set of positive integers $x$ with $p \mid xb$. Then $p \in S$ and $a \in S$, so $S$ is nonempty.
-  Let $d$ be its smallest element.
-  \ii $d$ divides every $x \in S$: write $x = qd + r$ with $0 \le r < d$. Then $rb = xb - q(db)$ is divisible by $p$.
-  If $r > 0$, then $r \in S$ and $r < d$, contradicting the choice of $d$. So $r = 0$.
-  \ii By Step 2, $d \mid p$ and $d \mid a$. Since $p$ is prime, $d = 1$ or $d = p$; and $d = p$ would give $p \mid a$,
-  which we excluded. So $d = 1$, and $1 \in S$ means $p \mid b$.
-  \ii For several factors, apply the two-factor case repeatedly: $p \mid a_1(a_2\cdots a_m)$ gives $p \mid a_1$
-  or $p \mid a_2 \cdots a_m$, and so on.
-\end{steps}
+  Assume $p \mid ab$ and $p \nmid a$; we show $p \mid b$.
+  \begin{steps}
+    \ii Let $S$ be the set of positive integers $x$ with $p \mid xb$. Then $p \in S$ and $a \in S$, so $S$ is nonempty. By \ilink{T2}{(T2)} it has a smallest element $d$.
+    \ii We show that $d$ divides every $x \in S$. By \ilink{T1}{(T1)} write $x = qd + r$ with $0 \le r < d$. Then $rb = xb - q(db)$, and both $xb$ and $db$ are divisible by $p$, so $p \mid rb$. If $r > 0$, then $r \in S$ and $r < d$, contradicting the choice of $d$. So $r = 0$.
+    \ii By Step~2, $d \mid p$ and $d \mid a$. Since $p$ is prime, $d = 1$ or $d = p$, and $d = p$ would give $p \mid a$, which we excluded. So $d = 1$, and $1 \in S$ says $p \mid b$.
+    \ii For several factors, apply the two-factor case repeatedly: $p \mid a_1(a_2\cdots a_m)$ gives $p \mid a_1$ or $p \mid a_2 \cdots a_m$, and in the second case we continue with $a_2 \cdots a_m$.
+  \end{steps}
 \end{proof}
 
-\begin{lemma}[A prime divides its interior binomial coefficients]\label{lem:binom}
+\begin{lemma*}[A prime divides its interior binomial coefficients]\target{lem-binom}
   Let $p$ be a prime and $1 \le j \le p - 1$. Then $p$ divides $\binom pj$.
-\end{lemma}
+\end{lemma*}
 \begin{proof}
-\begin{steps}
-  \ii $\binom pj$ is an integer and $p! = \binom pj \cdot j! \cdot (p-j)!$.
-  \ii The prime $p$ divides the left side $p!$.
-  \ii Every factor of $j!\,(p-j)!$ is a positive integer less than $p$, because $j \le p-1$ and $p - j \le p - 1$,
-  and $p$ divides no positive integer less than $p$. So by \rref{lem:euclidlemma}{Euclid's lemma},
-  $p \nmid j!\,(p-j)!$.
-  \ii Since $p$ divides $\binom pj \cdot j!\,(p-j)!$ but not $j!\,(p-j)!$, \rref{lem:euclidlemma}{Euclid's lemma}
-  gives $p \mid \binom pj$.
-\end{steps}
+  \begin{steps}
+    \ii By \ilink{T3}{(T3)}, $\binom pj$ is an integer and $p! = \binom pj \cdot j! \cdot (p-j)!$. The prime $p$ divides the left side $p!$.
+    \ii Every factor of $j!\,(p-j)!$ is a positive integer less than $p$, because $j \le p-1$ and $p - j \le p - 1$, and $p$ divides no positive integer less than $p$. So by \ilink{lem-euclid}{Euclid's lemma}, $p \nmid j!\,(p-j)!$.
+    \ii Since $p$ divides the product $\binom pj \cdot j!\,(p-j)!$ but not the factor $j!\,(p-j)!$, \ilink{lem-euclid}{Euclid's lemma} gives $p \mid \binom pj$.
+  \end{steps}
 \end{proof}
 
-\begin{theorem}[Fermat's little theorem]\label{thm:fermat}
+\begin{theorem*}[Fermat's little theorem]\target{thm-fermat}
   Let $p$ be a prime. Then $p \mid n^p - n$ for every positive integer $n$.
-\end{theorem}
+\end{theorem*}
 
-\paragraph{Investigation.}
-$P(k)$ is ``$p \mid k^p - k$''. Write the $P(k+1)$ expression and expand with the binomial theorem:
+$P(k)$ is ``$p \mid k^p - k$''. Write the expression in $P(k+1)$ and expand it with the binomial theorem \ilink{T3}{(T3)}:
 \[
   (k+1)^p - (k+1) = \left( k^p + \sum_{j=1}^{p-1} \binom pj k^j + 1 \right) - k - 1
   = \underbrace{(k^p - k)}_{\text{copy of } P(k)} + \sum_{j=1}^{p-1} \binom pj k^j.
 \]
-The copy of $P(k)$ is divisible by $p$ by hypothesis. The leftover is a sum of terms
-$\binom pj k^j$ with $1 \leq j \leq p-1$. So the step reduces to:
-\emph{$p$ divides $\binom pj$ for $1 \le j \le p-1$.} Test $p = 5$: $\binom51, \dots, \binom54
-= 5, 10, 10, 5$. All divisible by $5$. For a composite number, $\binom 42 = 6$ is not divisible by $4$,
-so primality must be used. This is \rref{lem:binom}{the binomial lemma}.
-
+\begin{ideabox}
+  The copy of $P(k)$ is divisible by $p$ by hypothesis, so the step reduces to: $p$ divides $\binom pj$ for $1 \le j \le p-1$. Test $p = 5$: $\binom51, \dots, \binom54 = 5, 10, 10, 5$, all divisible by $5$. For a composite number it fails: $\binom 42 = 6$ is not divisible by $4$. So primality must be used, and \ilink{lem-binom}{the binomial lemma} is where it is used.
+\end{ideabox}
 \begin{proof}
-Induct on $n$, with $P(n)$: ``$p \mid n^p - n$.''
-\begin{steps}
-  \ii Base case $n = 1$: $1^p - 1 = 0$ is divisible by $p$.
-  \ii Assume $p \mid k^p - k$ for some $k \geq 1$. By the binomial theorem,
-  \[ (k+1)^p - (k+1) = (k^p - k) + \sum_{j=1}^{p-1} \binom pj k^j. \]
-  \ii The first term is divisible by $p$ by the assumption, and each term of the sum is divisible by $p$
-  by \rref{lem:binom}{the binomial lemma}. So $p \mid (k+1)^p - (k+1)$, which is $P(k+1)$.
-\end{steps}
+  Induct on $n$, with $P(n)$ the statement ``$p \mid n^p - n$'' for $n \geq 1$.
+  \begin{steps}
+    \ii Base case $n = 1$: $1^p - 1 = 0$ is divisible by $p$.
+    \ii Assume $p \mid k^p - k$ for some $k \geq 1$. By the binomial theorem \ilink{T3}{(T3)}, $(k+1)^p - (k+1) = (k^p - k) + \sum_{j=1}^{p-1} \binom pj k^j$.
+    \ii The first term is divisible by $p$ by the assumption, and each term of the sum is divisible by $p$ by \ilink{lem-binom}{the binomial lemma}. So $p \mid (k+1)^p - (k+1)$, which is $P(k+1)$.
+  \end{steps}
 \end{proof}
 
 \begin{fig}
-\begin{tikzpicture}[x=0.62cm,y=0.55cm]
+\begin{tikzpicture}[x=0.6cm,y=0.53cm]
+  \foreach \n in {2,...,7} {
+    \foreach \k in {1,...,\numexpr\n-1\relax} {
+      \pgfmathtruncatemacro{\c}{round(\n!/(\k!*(\n-\k)!))}
+      \pgfmathtruncatemacro{\divis}{(mod(\c,\n)==0)}
+      \ifnum\divis=1 \InkRegion[inkblue]{(\k-\n/2-0.42,-\n-0.4) rectangle (\k-\n/2+0.42,-\n+0.4)};
+      \else \InkRegion[inkred]{(\k-\n/2-0.42,-\n-0.4) rectangle (\k-\n/2+0.42,-\n+0.4)}; \fi
+    }
+  }
   \foreach \n in {0,...,7} {
-    \node[anchor=east,font=\scriptsize,gray] at (-4.6,-\n) {row $\n$};
+    \node[anchor=east,font=\scriptsize,text=inkslate] at (-4.7,-\n) {row $\n$};
     \foreach \k in {0,...,\n} {
       \pgfmathtruncatemacro{\c}{round(\n!/(\k!*(\n-\k)!))}
-      \pgfmathtruncatemacro{\interior}{(\k>0)&&(\k<\n)}
-      \pgfmathtruncatemacro{\divis}{(mod(\c,max(\n,1))==0)}
-      \ifnum\interior=1
-        \ifnum\divis=1
-          \node[circle, fill=gray!30, inner sep=1.2pt, font=\small] at (\k-\n/2,-\n) {$\c$};
-        \else
-          \node[rectangle, draw, inner sep=1.6pt, font=\small] at (\k-\n/2,-\n) {$\c$};
-        \fi
-      \else
-        \node[font=\small] at (\k-\n/2,-\n) {$\c$};
-      \fi
+      \node[font=\small] at (\k-\n/2,-\n) {$\c$};
     }
   }
 \end{tikzpicture}
-\captionof{figure}{Pascal's triangle. Interior entries of row $n$ that are divisible by $n$ are shaded;
-those that are not are boxed. In the prime rows $2, 3, 5, 7$ every interior entry is shaded.
-Rows $4$ and $6$ have boxed entries ($6$; $15$ and $20$).}
+\figcap{Pascal's triangle. Interior entries of row $n$ that are divisible by $n$ are blue; those that are not are red. In the prime rows $2, 3, 5, 7$ every interior entry is blue; rows $4$ and $6$ have red entries ($6$; $15$ and $20$).}
 \end{fig}
 
-\subsection{Choose what to induct on}
-Some problems contain no integer at all. Then you must decide what to induct on.
-Get your hands dirty by building the object one piece at a time; the number of pieces is
-usually the right variable.
+\subsubsection*{Way 2: choose what to induct on}
+Some problems contain no integer at all. Then you must decide what to induct on. Get your hands dirty by building the object one piece at a time; the number of pieces is usually the right variable.
 
-\begin{example}[P\&B \S1.2; ACPS 2.3.7]\label{ex:lines}
-  Finitely many lines divide the plane into regions. Show that the regions can be colored with two
-  colors so that any two regions sharing a boundary segment have different colors.
-\end{example}
+\begin{example*}[P\&B \S1.2; ACPS 2.3.7: two-coloring the regions of lines]\target{ex-lines}
+  Finitely many lines divide the plane into regions. Show that the regions can be colored with two colors so that any two regions sharing a boundary segment have different colors.
+\end{example*}
 
-\paragraph{Investigation.}
-Draw one line: two half-planes, one of each color. Draw a second line crossing it: four regions,
-colored like a checkerboard. Now add a third line. It cuts some old regions in two,
-and the two halves of each cut region have the same color, which is not allowed.
+Draw one line: two half-planes, one of each color. Draw a second line crossing it: four regions, colored like a checkerboard. Now add a third line. It cuts some old regions in two, and the two halves of each cut region have the same color, which is not allowed.
 
-Wishful thinking: we want the two halves of every cut region to get different colors,
-and we want old neighbors to stay different. Each cut region has one half on each side of the new line.
-So: \emph{keep every color on one side of the new line and swap every color on the other side.}
-Old neighbors on the same side are either both kept or both swapped, so they stay different.
-Neighbors across the new line are halves of one old region, so after the swap they differ.
-The variable to induct on is the number of lines.
+\begin{ideabox}
+  We want the two halves of every cut region to get different colors, and we want old neighbors to stay different. Each cut region has one half on each side of the new line. So keep every color on one side of the new line and swap every color on the other side. Old neighbors on the same side are both kept or both swapped, so they stay different. Neighbors across the new line are halves of one old region, so after the swap they differ. The variable to induct on is the number of lines.
+\end{ideabox}
 
 \begin{proof}
-Call a coloring \emph{good} if regions sharing a boundary segment have different colors.
-Let $P(n)$ be: ``the regions formed by any $n$ lines have a good coloring,'' for $n \geq 1$.
-\begin{steps}
-  \ii Base case $n = 1$: color one half-plane black and the other white.
-  \ii Assume $P(k)$, and take any $k+1$ lines. Remove one line $\ell$; by $P(k)$ the regions formed by the
-  other $k$ lines have a good coloring. Put $\ell$ back and reverse the colors of all regions on one side of $\ell$.
-  \ii Let $R, R'$ be two new regions sharing a boundary segment $\sigma$. If $\sigma$ is not on $\ell$,
-  then $R$ and $R'$ lie on the same side of $\ell$, inside two different old regions that shared a segment;
-  those had different colors, and both were reversed or both were kept.
-  \ii If $\sigma$ is on $\ell$, then $R$ and $R'$ are the two parts of one old region,
-  and exactly one of them was reversed.
-  \ii In both cases $R$ and $R'$ have different colors, so the new coloring is good. This proves $P(k+1)$.
-\end{steps}
+  Call a coloring \emph{good} if regions sharing a boundary segment have different colors. Let $P(n)$ be the statement ``the regions formed by any $n$ lines have a good coloring'', for $n \geq 1$.
+  \begin{steps}
+    \ii Base case $n = 1$: color one half-plane black and the other white.
+    \ii Assume $P(k)$, and take any $k+1$ lines. Remove one line $\ell$. By $P(k)$, the regions formed by the other $k$ lines have a good coloring. Put $\ell$ back and reverse the colors of all regions on one side of $\ell$.
+    \ii Let $R$ and $R'$ be two new regions sharing a boundary segment $\sigma$. Suppose first that $\sigma$ is not on $\ell$. Then $R$ and $R'$ lie on the same side of $\ell$, inside two different old regions that shared a segment. Those old regions had different colors, and both were reversed or both were kept, so $R$ and $R'$ still differ.
+    \ii Suppose now that $\sigma$ is on $\ell$. Then $R$ and $R'$ are the two parts of one old region, and exactly one of them was reversed, so they differ.
+    \ii In both cases $R$ and $R'$ have different colors, so the new coloring is good. This proves $P(k+1)$.
+  \end{steps}
 \end{proof}
 
 \begin{fig}
-\begin{tikzpicture}[scale=0.85]
-  \def\Lone{(-10,-4.5) -- (14,7.5) -- (14,25) -- (-10,25) -- cycle}
-  \def\Ltwo{(-10,19.5) -- (14,-16.5) -- (14,25) -- (-10,25) -- cycle}
-  \def\Lnew{(-10,-0.2) -- (14,2.2) -- (14,-20) -- (-10,-20) -- cycle}
+\begin{tikzpicture}[scale=0.82]
+  % Half-planes of the lines y = x/2 + 1/2 (A), y = -3x/2 + 9/2 (B), y = x/10 + 4/5 (C, the new line).
+  \def\Ain{(-10,-4.5) -- (14,7.5) -- (14,25) -- (-10,25) -- cycle}
+  \def\Aout{(-10,-4.5) -- (14,7.5) -- (14,-25) -- (-10,-25) -- cycle}
+  \def\Bin{(-10,19.5) -- (14,-16.5) -- (14,25) -- (-10,25) -- cycle}
+  \def\Bout{(-10,19.5) -- (14,-16.5) -- (14,-25) -- (-10,-25) -- cycle}
+  \def\Cin{(-10,-0.2) -- (14,2.2) -- (14,-25) -- (-10,-25) -- cycle}
+  \def\Cout{(-10,-0.2) -- (14,2.2) -- (14,25) -- (-10,25) -- cycle}
+  % Shade the cell cut out by three half-planes.
+  \newcommand{\LinesCell}[3]{\begin{scope}\clip #1; \clip #2; \clip #3; \InkRegion[inkslate]{(0,0) rectangle (4,3)}\end{scope}}
   \foreach \panel/\shift in {1/0,2/5,3/10} {
     \begin{scope}[xshift=\shift cm]
       \begin{scope}
         \clip (0,0) rectangle (4,3);
         \ifnum\panel=3
-          \fill[gray!45, even odd rule] \Lone \Ltwo \Lnew;
+          % Shaded: inside an odd number of A, B, C (colors reversed below the new line).
+          \LinesCell{\Ain}{\Bout}{\Cout}\LinesCell{\Aout}{\Bin}{\Cout}
+          \LinesCell{\Aout}{\Bout}{\Cin}\LinesCell{\Ain}{\Bin}{\Cin}
         \else
-          \fill[gray!45, even odd rule] \Lone \Ltwo;
+          % Shaded: inside exactly one of A, B.
+          \LinesCell{\Ain}{\Bout}{(0,0) rectangle (4,3)}\LinesCell{\Aout}{\Bin}{(0,0) rectangle (4,3)}
         \fi
-        \draw[thick] (-1,0) -- (5,3);
-        \draw[thick] (-1,6) -- (5,-3);
+        \PacketInkPath[black,line width=.6pt]{(-1,0) -- (5,3)}
+        \PacketInkPath[black,line width=.6pt]{(-1,6) -- (5,-3)}
         \ifnum\panel>1
-          \draw[very thick, dashed] (-1,0.7) -- (5,1.3);
+          \PacketInkPath[inkred,line width=.8pt]{(-1,0.7) -- (5,1.3)}
         \fi
       \end{scope}
-      \draw (0,0) rectangle (4,3);
+      \PacketInkPath[inkslate]{(0,0) rectangle (4,3)}
     \end{scope}
   }
   \node[font=\small] at (2,-0.45) {(a) two lines};
-  \node[font=\small] at (7,-0.45) {(b) add $\ell$ (dashed)};
+  \node[font=\small] at (7,-0.45) {(b) add $\ell$ (red)};
   \node[font=\small] at (12,-0.45) {(c) swap colors below $\ell$};
-  \node[font=\small] at (9.25,1.3) {$\ell$};
+  \node[font=\small] at (9.25,1.42) {\InkLabel[inkred]{$\ell$}};
 \end{tikzpicture}
-\captionof{figure}{(a) A good coloring for two lines. (b) The new line $\ell$ cuts three regions in two;
-each pair of halves has one color, so neighbors across $\ell$ match. (c) Reversing every color below $\ell$
-makes neighbors across $\ell$ differ and leaves all other neighboring pairs as they were.}
+\figcap{(a) A good coloring for two lines (shaded and white). (b) The new line $\ell$ cuts three regions in two, and the two halves of each have one color. (c) Reversing every color below $\ell$ makes neighbors across $\ell$ differ and leaves every other neighboring pair as it was.}
 \end{fig}
 
-\begin{remark}[The same step works for circles]
-  Engel 8.8 asks the same question for $n$ circles. The step is identical with ``one side of $\ell$''
-  replaced by ``inside the new circle''. Only one property of the new curve is used:
-  it separates the plane into two parts. Check that property before you reuse the step.
-\end{remark}
+\begin{remark*}[The same step works for circles]
+  Engel 8.8 asks the same question for $n$ circles. The step is identical, with ``one side of $\ell$'' replaced by ``inside the new circle''. Only one property of the new curve is used: it separates the plane into two parts. Check that property before you reuse the step.
+\end{remark*}
 
-\subsection{Remove a piece, use the hypothesis, put the piece back}
-In a graph or a configuration, the step from size $k+1$ down to size $k$ is often the natural direction:
-start with an arbitrary object of size $k+1$, remove a well-chosen piece, apply $P(k)$ to what is left,
-then count what the removed piece can add.
+\subsubsection*{Way 3: remove a piece, use the hypothesis, put the piece back}
+In a graph or a configuration, the natural direction is often from size $k+1$ down to size $k$: start with an arbitrary object of size $k+1$, remove a well-chosen piece, apply $P(k)$ to what is left, then count what the removed piece can add.
 
-A \vocab{graph} here is a set of points (\vocab{vertices}) with some pairs joined by segments (\vocab{edges});
-a \vocab{triangle} is three vertices joined pairwise.
+\begin{definition*}[Graph, triangle]
+  A \textbf{graph} is a set of points (\textbf{vertices}) with some pairs joined by segments (\textbf{edges}). A \textbf{triangle} is three vertices joined pairwise.
+\end{definition*}
 
-\begin{example}[Engel 8.1; a theorem of Mantel]\label{ex:mantel}
-  $2n$ points are given in space, and $n^2 + 1$ segments are drawn between pairs of them.
-  Show that some three of the points are joined pairwise by segments.
-\end{example}
+\begin{example*}[Engel 8.1; Mantel's theorem]\target{ex-mantel}
+  $2n$ points are given in space, and $n^2 + 1$ segments are drawn between pairs of them. Show that some three of the points are joined pairwise by segments.
+\end{example*}
 
-\paragraph{Investigation.}
-Make it easier: $n = 1$ gives $2$ points and $2$ segments, which is impossible
-(two points have only one pair), so the statement holds trivially.
-Get your hands dirty with $n = 2$: four points and five segments. Four points have six pairs;
-leaving out one pair leaves two triangles. A computer check of all graphs on $4$ and $6$ vertices
-confirms that the largest triangle-free graphs have exactly $4 = 2^2$ and $9 = 3^2$ edges.
+Make it easier: $n = 1$ gives $2$ points and $2$ segments, which is impossible, because two points have only one pair; so the statement holds trivially. Get your hands dirty with $n = 2$: four points and five segments. Four points have six pairs; leaving out one pair leaves two triangles. A computer check of all graphs on $4$ and $6$ vertices confirms that the largest triangle-free graphs have exactly $4 = 2^2$ and $9 = 3^2$ edges.
 
-Is $n^2$ attained? Split the $2n$ points into two groups of $n$ and join every point of one group to every
-point of the other. That gives $n \cdot n = n^2$ segments, and any three points have two in the same group,
-which are not joined. So $n^2 + 1$ cannot be lowered.
+Is $n^2$ attained? Split the $2n$ points into two groups of $n$ and join every point of one group to every point of the other. That gives $n \cdot n = n^2$ segments, and any three points have two in the same group, which are not joined. So $n^2 + 1$ cannot be lowered.
 
-Restate the conclusion as the contrapositive, which is easier to induct on:
-\emph{a triangle-free graph on $2n$ vertices has at most $n^2$ edges.}
-From $2n$ to $2n + 2$ vertices the bound grows by $(n+1)^2 - n^2 = 2n + 1$. So we must remove
-\emph{two} vertices whose edges number at most $2n+1$. Wishful thinking: two joined vertices $A$, $B$.
-The edge $AB$ counts $1$. No other vertex is joined to both (that would be a triangle), so the other $2n$
-vertices contribute at most one edge each, $2n$ in total. That is exactly $2n + 1$.
+\begin{ideabox}
+  Restate the conclusion as its contrapositive, which is easier to induct on: \emph{a triangle-free graph on $2n$ vertices has at most $n^2$ edges.} From $2n$ to $2n + 2$ vertices the bound grows by $(n+1)^2 - n^2 = 2n + 1$, so we must remove \emph{two} vertices that carry at most $2n+1$ edges. Wishful thinking suggests two joined vertices $A$ and $B$: the edge $AB$ counts $1$, and no other vertex is joined to both (that would be a triangle), so the other $2n$ vertices contribute at most one edge each. That is exactly $2n + 1$.
+\end{ideabox}
 
 \begin{proof}
-Let $T(n)$ be: ``every graph on $2n$ vertices with no triangle has at most $n^2$ edges,'' for $n \geq 1$.
-The statement of the problem is the contrapositive of $T(n)$.
-\begin{steps}
-  \ii Base case $n = 1$: a graph on $2$ vertices has at most $1 = 1^2$ edge.
-  \ii Assume $T(k)$ and let $G$ be a triangle-free graph on $2k + 2$ vertices.
-  If $G$ has no edges, it has $0 \le (k+1)^2$ edges. Otherwise choose an edge $AB$.
-  \ii Delete $A$ and $B$ and all edges at them. The remaining graph $G'$ has $2k$ vertices and no triangle,
-  so by $T(k)$ it has at most $k^2$ edges.
-  \ii Each of the $2k$ vertices $C$ of $G'$ is joined to at most one of $A$, $B$: if it were joined to both,
-  then $A$, $B$, $C$ would form a triangle. So at most $2k$ edges join $\{A, B\}$ to $G'$.
-  \ii Every edge of $G$ lies in $G'$, or joins $\{A,B\}$ to $G'$, or is $AB$ itself. So $G$ has at most
-  $k^2 + 2k + 1 = (k+1)^2$ edges, which is $T(k+1)$.
-\end{steps}
+  Let $T(n)$ be the statement ``every graph on $2n$ vertices with no triangle has at most $n^2$ edges'', for $n \geq 1$. The problem is the contrapositive of $T(n)$.
+  \begin{steps}
+    \ii Base case $n = 1$: a graph on $2$ vertices has at most $1 = 1^2$ edge.
+    \ii Assume $T(k)$ and let $G$ be a triangle-free graph on $2k + 2$ vertices. If $G$ has no edges, it has $0 \le (k+1)^2$ edges and we are done. Otherwise choose an edge $AB$.
+    \ii Delete $A$ and $B$ and all edges at them. The remaining graph $G'$ has $2k$ vertices and no triangle, so by $T(k)$ it has at most $k^2$ edges.
+    \ii Each of the $2k$ vertices $C$ of $G'$ is joined to at most one of $A$ and $B$: if it were joined to both, then $A$, $B$, $C$ would form a triangle. So at most $2k$ edges join $\{A, B\}$ to $G'$.
+    \ii Every edge of $G$ lies in $G'$, or joins $\{A,B\}$ to $G'$, or is $AB$ itself. So $G$ has at most $k^2 + 2k + 1 = (k+1)^2$ edges, which is $T(k+1)$.
+  \end{steps}
 \end{proof}
 
 \begin{fig}
-\begin{tikzpicture}[v/.style={circle,fill,inner sep=1.6pt}]
+\begin{tikzpicture}
   \begin{scope}
-    \foreach \i in {1,2,3} { \node[v] (a\i) at (0,1.6-0.8*\i) {}; \node[v] (b\i) at (1.8,1.6-0.8*\i) {}; }
-    \foreach \i in {1,2,3} \foreach \j in {1,2,3} \draw (a\i) -- (b\j);
-    \node[font=\small] at (0.9,-1.5) {(a) $n = 3$: $9$ edges, no triangle};
+    \foreach \i in {1,2,3} { \coordinate (a\i) at (0,1.6-0.8*\i); \coordinate (b\i) at (1.8,1.6-0.8*\i); }
+    \foreach \i in {1,2,3} \foreach \j in {1,2,3} \PacketInkPath[inkslate]{(a\i) -- (b\j)};
+    \foreach \i in {1,2,3} { \fill[inkblue] (a\i) circle (1.7pt); \fill[inkred] (b\i) circle (1.7pt); }
+    \node[font=\small] at (0.9,-1.55) {(a) $n = 3$: $9$ edges, no triangle};
   \end{scope}
   \begin{scope}[xshift=6cm]
-    \node[v,label=left:$A$] (A) at (0,0.8) {};
-    \node[v,label=left:$B$] (B) at (0,-0.8) {};
-    \draw[very thick] (A) -- node[left,font=\scriptsize]{$1$} (B);
-    \draw[rounded corners] (1.4,-1.1) rectangle (2.6,1.1);
-    \node[font=\small] at (2.0,1.35) {$G'$: $2k$ vertices};
+    \coordinate (A) at (0,0.8); \coordinate (B) at (0,-0.8);
+    \PacketInkPath[inkslate]{(1.4,-1.1) rectangle (2.6,1.1)}
     \foreach \i/\y/\t in {1/0.7/A,2/0.25/B,3/-0.2/A,4/-0.65/B} {
-      \node[v] (c\i) at (2.0,\y) {};
-      \draw[gray] (c\i) -- (\t);
+      \coordinate (c\i) at (2.0,\y);
+      \PacketInkPath[inkslate]{(c\i) -- (\t)}
     }
+    \PacketInkPath[inkred,line width=1pt]{(A) -- (B)}
+    \foreach \i in {1,...,4} \fill[black] (c\i) circle (1.5pt);
+    \fill[inkred] (A) circle (1.8pt); \fill[inkred] (B) circle (1.8pt);
+    \node[left=2pt] at (A) {\InkLabel{$A$}}; \node[left=2pt] at (B) {\InkLabel{$B$}};
+    \node[left=1pt,font=\scriptsize] at (0,0) {\InkLabel[inkred]{$1$}};
+    \node[font=\small] at (2.0,1.35) {$G'$: $2k$ vertices};
     \node[font=\scriptsize,align=left,anchor=west] at (2.8,0.0) {each vertex of $G'$:\\ at most one edge\\ to $\{A,B\}$};
-    \node[font=\small] at (1.7,-1.5) {(b) the inductive step};
+    \node[font=\small] at (1.7,-1.55) {(b) the inductive step};
   \end{scope}
 \end{tikzpicture}
-\captionof{figure}{(a) Two groups of $n$ points, every cross pair joined: $n^2$ edges and no triangle,
-so the bound $n^2$ is exact. (b) Remove a joined pair $A$, $B$. The rest has at most $k^2$ edges by $T(k)$;
-the pair adds at most $2k$ edges to the rest, plus the edge $AB$.}
+\figcap{(a) Two groups of $n$ points with every cross pair joined: $n^2$ edges and no triangle, so the bound $n^2$ is exact. (b) Remove a joined pair $A$, $B$: the rest has at most $k^2$ edges, the pair sends at most $2k$ edges to the rest, plus the edge $AB$.}
 \end{fig}
 
-\begin{remark}[Two edge cases in this proof]
-  The step needs an edge $AB$ to exist; the graph with no edges is handled separately in Step 2.
-  And the induction moves in steps of two vertices, so it proves the claim only for an even number of
-  vertices. That is all the problem asks. For an odd number $m$ of vertices the largest number of edges
-  is the largest integer that is at most $m^2/4$, and that needs a separate argument.
-\end{remark}
+\begin{trapbox}
+  \ii \textbf{The step needs an edge $AB$.} The graph with no edges has to be handled separately, as in Step~2.
+  \ii \textbf{The induction moves in steps of two vertices,} so it proves the bound only for an even number of vertices, which is all the problem asks. For an odd number $m$ of vertices the largest number of edges is the largest integer that is at most $m^2/4$, and that needs a separate argument.
+\end{trapbox}
 
-\subsection{Strengthen the statement}
-Sometimes the inductive step fails, not because the statement is false,
-but because $P(k)$ is too weak to give $P(k+1)$.
-Then prove a \emph{stronger} statement. You need more to reach the new goal,
-but you also get more to use in the step.
+\subsubsection*{Way 4: strengthen the statement}
+Sometimes the inductive step fails, not because the statement is false, but because $P(k)$ is too weak to give $P(k+1)$. Then prove a \emph{stronger} statement. You need more to reach the new goal, but you also have more to use in the step.
 
-\begin{example}[A bound for the product of the odd-over-even fractions]\label{ex:wallis}
+\begin{example*}[A bound for the product of the odd-over-even fractions]\target{ex-wallis}
   Prove that for every positive integer $n$,
-  \[
-    Q_n := \frac{1 \cdot 3 \cdot 5 \cdots (2n-1)}{2 \cdot 4 \cdot 6 \cdots (2n)} < \frac{1}{\sqrt{3n}}.
-  \]
-\end{example}
+  \[ Q_n := \frac{1 \cdot 3 \cdot 5 \cdots (2n-1)}{2 \cdot 4 \cdot 6 \cdots (2n)} < \frac{1}{\sqrt{3n}}. \]
+\end{example*}
 
-\paragraph{Investigation: the direct attempt.}
-Note $Q_{n+1} = Q_n \cdot \frac{2n+1}{2n+2}$. Assume $Q_n < 1/\sqrt{3n}$. Then
-\[
-  Q_{n+1} < \frac{2n+1}{(2n+2)\sqrt{3n}},
-\]
-and we want this to be at most $1/\sqrt{3n+3}$. Squaring and clearing denominators, we need
-\[
-  (2n+1)^2(3n+3) \le (2n+2)^2 (3n),
-  \quad\text{that is,}\quad
-  12n^3 + 24n^2 + 15n + 3 \le 12n^3 + 24n^2 + 12n.
-\]
-This is false for every $n$. The step fails.
+\textbf{The direct attempt fails.} Note $Q_{n+1} = Q_n \cdot \frac{2n+1}{2n+2}$. Assume $Q_n < 1/\sqrt{3n}$. Then $Q_{n+1} < \frac{2n+1}{(2n+2)\sqrt{3n}}$, and we want this to be at most $1/\sqrt{3n+3}$. Squaring and clearing denominators, we need
+\[ (2n+1)^2(3n+3) \le (2n+2)^2 (3n), \quad\text{that is,}\quad 12n^3 + 24n^2 + 15n + 3 \le 12n^3 + 24n^2 + 12n. \]
+This is false for every $n$, so the step fails.
 
-\paragraph{Investigation: wishful thinking.}
-The bound $1/\sqrt{3n}$ seems too loose to carry forward. Try a family of tighter bounds,
-$Q_n \le 1/\sqrt{3n + c}$ with a constant $c \geq 0$ to be chosen, and see what $c$ the step needs.
-The same computation now requires
-\[
-  (2n+1)^2(3n+3+c) \le (2n+2)^2(3n+c).
-\]
-Expanding both sides, the $n^3$ and $n^2$ terms cancel, and the condition becomes
-\[
-  0 \le (4c - 3)\,n + 3(c - 1).
-\]
-With $c = 1$ the right side is $n \ge 0$, so the step works.
-(With $c = 0$ it is $-3n - 3$, which is the failure above.)
-The base case needs $Q_1 = \tfrac12 \le 1/\sqrt{3 + c}$, that is, $c \le 1$.
-So $c = 1$ satisfies both requirements. Since $1/\sqrt{3n+1} < 1/\sqrt{3n}$,
-the stronger statement implies the original one.
+\begin{ideabox}
+  The bound $1/\sqrt{3n}$ is too loose to carry forward. Try a family of tighter bounds $Q_n \le 1/\sqrt{3n + c}$, with a constant $c \geq 0$ to be chosen, and see which $c$ the step needs. The same computation now requires $(2n+1)^2(3n+3+c) \le (2n+2)^2(3n+c)$. Expanding both sides, the $n^3$ and $n^2$ terms cancel, and the condition becomes
+  \[ 0 \le (4c - 3)\,n + 3(c - 1). \]
+  With $c = 1$ the right side is $n \ge 0$, so the step works; with $c = 0$ it is $-3n - 3$, which is the failure above. The base case needs $Q_1 = \tfrac12 \le 1/\sqrt{3 + c}$, that is, $c \le 1$. So $c = 1$ meets both requirements, and since $1/\sqrt{3n+1} < 1/\sqrt{3n}$, the stronger statement implies the original one.
+\end{ideabox}
 
-The figure plots the right side of the step condition, $(4c-3)\,n + 3(c-1)$, for three choices of $c$.
-The step from $n$ to $n+1$ works exactly when the plotted value at $n$ is at least $0$.
+\begin{proof}
+  Let $P(n)$ be the statement ``$Q_n \le 1/\sqrt{3n+1}$'', for $n \geq 1$. It implies the claim, since $1/\sqrt{3n+1} < 1/\sqrt{3n}$.
+  \begin{steps}
+    \ii Base case: $Q_1 = \tfrac12 = 1/\sqrt{4}$, so $P(1)$ holds with equality.
+    \ii Assume $Q_k \le 1/\sqrt{3k+1}$. Then $Q_{k+1} = Q_k \cdot \frac{2k+1}{2k+2} \le \frac{2k+1}{(2k+2)\sqrt{3k+1}}$.
+    \ii So it suffices to show $\frac{2k+1}{(2k+2)\sqrt{3k+1}} \le \frac{1}{\sqrt{3k+4}}$. Both sides are positive, so this is equivalent to the inequality between their squares, which after clearing denominators is $(2k+1)^2(3k+4) \le (2k+2)^2(3k+1)$.
+    \ii Expanding gives $12k^3 + 28k^2 + 19k + 4 \le 12k^3 + 28k^2 + 20k + 4$, which holds because $k \ge 0$. This proves $P(k+1)$.
+  \end{steps}
+\end{proof}
+
+The figure plots the right side of the step condition, $(4c-3)\,n + 3(c-1)$, for three choices of $c$. The step from $n$ to $n+1$ works exactly when the plotted value at $n$ is at least $0$.
 
 \begin{fig}
 \begin{tikzpicture}
 \begin{axis}[
-  width=0.55\linewidth, height=5.4cm,
-  axis lines=left, xmin=0.5, xmax=6.5, ymin=-22, ymax=8,
-  xtick={1,...,6}, xlabel={$n$}, ylabel={$(4c-3)\,n + 3(c-1)$},
-  every axis label/.style={font=\small},
+  width=0.52\linewidth, height=5.2cm,
+  axis lines*=left, xmin=0.5, xmax=6.5, ymin=-22, ymax=8,
+  xtick={1,...,6}, xlabel={$n$},
+  ylabel={$(4c-3)\,n + 3(c-1)$}, ylabel style={rotate=-90,at={(axis description cs:0,1.03)},anchor=south west},
+  tick label style={font=\scriptsize}, label style={font=\small},
   clip=false]
-  \addplot[thick, mark=*, samples at={1,...,6}] {x};
-  \node[right, font=\small] at (axis cs:6.3,6.5) {$c = 1$: value $n$};
-  \addplot[thick, mark=square*, mark size=1.5pt, samples at={1,...,6}] {-0.75};
-  \node[right, font=\small] at (axis cs:6.3,-2.2) {$c = \tfrac34$: value $-\tfrac34$};
-  \addplot[thick, mark=o, samples at={1,...,6}] {-3*x-3};
-  \node[right, font=\small] at (axis cs:6.3,-17.5) {$c = 0$: value $-3n-3$};
-  \addplot[domain=0.5:6.5, dashed, gray] {0};
+  \addplot[ink guide,draw=inkslate,domain=0.5:6.5] {0};
+  \addplot[ink plot,draw=inkblue,domain=1:6,samples=2] {x};
+  \addplot[ink plot,draw=inkamber,domain=1:6,samples=2] {-0.75};
+  \addplot[ink plot,draw=inkred,domain=1:6,samples=2] {-3*x-3};
+  \addplot[only marks,mark=inkdot,inkblue,samples at={1,...,6}] {x};
+  \addplot[only marks,mark=inkdot,inkamber,samples at={1,...,6}] {-0.75};
+  \addplot[only marks,mark=inkring,draw=inkred,fill=white,samples at={1,...,6}] {-3*x-3};
+  \node[right,font=\small] at (axis cs:6.35,6.2) {\InkLabel[inkblue]{$c = 1$: value $n$}};
+  \node[right,font=\small] at (axis cs:6.35,-1.9) {\InkLabel[inkamber]{$c = \tfrac34$: value $-\tfrac34$}};
+  \node[right,font=\small] at (axis cs:6.35,-18) {\InkLabel[inkred]{$c = 0$: value $-3n-3$}};
 \end{axis}
 \end{tikzpicture}
-\captionof{figure}{The inductive step works where the plotted value is at least $0$ (on or above the dashed line).
-The original bound ($c = 0$) fails at every $n$, and so does $c = \tfrac34$. The value $c = 1$ works at every $n$.
-Values $c > 1$ also make the step work, but they fail the base case.}
+\figcap{The step works where the plotted value is at least $0$ (on or above the dotted line). The original bound ($c = 0$) and $c = \tfrac34$ fail at every $n$; $c = 1$ works at every $n$. Values $c > 1$ also make the step work, but they fail the base case.}
 \end{fig}
 
-\begin{proof}
-Let $P(n)$ be: ``$Q_n \le 1/\sqrt{3n+1}$,'' for $n \geq 1$. It implies the claim, since $1/\sqrt{3n+1} < 1/\sqrt{3n}$.
-\begin{steps}
-  \ii Base case: $Q_1 = \tfrac12 = 1/\sqrt{4}$.
-  \ii Assume $Q_k \le 1/\sqrt{3k+1}$. Then
-  $Q_{k+1} = Q_k \cdot \frac{2k+1}{2k+2} \le \frac{2k+1}{(2k+2)\sqrt{3k+1}}$.
-  \ii It suffices to show $\frac{2k+1}{(2k+2)\sqrt{3k+1}} \le \frac{1}{\sqrt{3k+4}}$. Both sides are positive,
-  so this is equivalent to its square, $(2k+1)^2(3k+4) \le (2k+2)^2(3k+1)$.
-  \ii Expanding: $12k^3 + 28k^2 + 19k + 4 \le 12k^3 + 28k^2 + 20k + 4$, which holds since $k \ge 0$.
-\end{steps}
-\end{proof}
+\begin{shortcuts}
+  \ii \textbf{Finding the strengthening.} Put a parameter in the statement (here $c$), run the inductive step with the parameter, and read off which values make the step and the base case both work. In \ilink{ex-wallis}{the product bound} this took one expansion and one line of algebra.
+\end{shortcuts}
 
-\begin{remark}[Finding the strengthening]
-  Put a parameter in the statement (here $c$), run the inductive step with the parameter, and read off
-  which values make the step and the base case both work. This is wishful thinking made precise.
-\end{remark}
+\subsubsection*{Way 5: generalize, then induct}
+A special statement can be harder to prove than a general one, because the special numbers hide the pattern that the step needs. Replace a fixed number by a variable and induct on the variable.
 
-\subsection{Generalize, then induct}
-A special statement can be harder to prove than a general one, because the special numbers
-hide the pattern that the step needs. Replace a fixed number by a variable and induct on the variable.
-
-\begin{example}[Engel 8.5; Tournament of Towns 1987]\label{ex:radical}
+\begin{example*}[Engel 8.5; Tournament of Towns 1987: a nested radical]\target{ex-radical}
   Prove that for every integer $N \geq 2$,
   \[ \sqrt{2\sqrt{3\sqrt{4 \cdots \sqrt{(N-1)\sqrt N}}}} < 3. \]
-\end{example}
+\end{example*}
 
-\paragraph{Investigation.}
-Get your hands dirty: for $N = 2, 3, 5, 10, 50$ the left side is about
-$1.414$, $1.861$, $2.448$, $2.748$, $2.761$. It increases with $N$ but stays well below $3$.
-Induction on $N$ does not work directly: going from $N$ to $N+1$ changes the \emph{innermost} radical,
-and the effect on the outside is hard to track.
+Get your hands dirty: for $N = 2, 3, 5, 10, 15$ the left side is about $1.414$, $1.861$, $2.448$, $2.748$, $2.761$. It increases with $N$ but stays well below $3$. Induction on $N$ does not work directly: going from $N$ to $N+1$ changes the \emph{innermost} radical, and the effect on the outside is hard to track.
 
-The outermost layer is $\sqrt{2 \cdot X}$, where $X = \sqrt{3\sqrt{4\cdots}}$ has the same shape, starting from $3$.
-Penultimate step: $\sqrt{2X} < 3$ follows from $X < 4.5$; a pattern that fits is $X < 4$, since then
-$\sqrt{2X} < \sqrt 8 < 3$. So generalize: the nested radical that starts at $m$ is less than $m + 1$.
-For $m$ the claim reads $\sqrt{m \cdot Y} < m+1$ where $Y$ starts at $m+1$; if $Y < m + 2$, then
-$\sqrt{mY} < \sqrt{m(m+2)} = \sqrt{(m+1)^2 - 1} < m+1$. The step goes from $m+1$ down to $m$,
-and the base case is the innermost layer $m = N$.
+\begin{ideabox}
+  The outermost layer is $\sqrt{2 \cdot X}$, where $X = \sqrt{3\sqrt{4\cdots}}$ has the same shape, starting from $3$. Penultimate step: $\sqrt{2X} < 3$ follows from $X < 4.5$, and the pattern ``starting value plus one'' suggests $X < 4$, since then $\sqrt{2X} < \sqrt 8 < 3$. So generalize: the nested radical that starts at $m$ is less than $m + 1$. For that statement, the outer layer is $\sqrt{m \cdot Y}$ with $Y$ starting at $m+1$; if $Y < m + 2$, then $\sqrt{mY} < \sqrt{m(m+2)} = \sqrt{(m+1)^2 - 1} < m+1$. The step goes from $m+1$ down to $m$, and the base case is the innermost layer $m = N$.
+\end{ideabox}
 
 \begin{proof}
-Fix $N \geq 2$. For $2 \le m \le N$ let $R_m = \sqrt{m\sqrt{(m+1)\sqrt{\cdots\sqrt N}}}$, so that
-$R_N = \sqrt N$ and $R_m = \sqrt{m R_{m+1}}$ for $m < N$. Let $P(m)$ be ``$R_m < m + 1$.''
-We prove $P(m)$ for $m = N, N-1, \dots, 2$; this is ordinary induction on $j = N - m$.
-\begin{steps}
-  \ii Base case $m = N$: $R_N = \sqrt N < N + 1$, since $N < (N+1)^2$.
-  \ii Assume $P(m+1)$ for some $m$ with $2 \le m < N$, that is, $R_{m+1} < m + 2$.
-  \ii Then $R_m = \sqrt{m R_{m+1}} < \sqrt{m(m+2)} = \sqrt{(m+1)^2 - 1} < m + 1$, which is $P(m)$.
-  \ii So $P(2)$ holds: the left side of the problem is $R_2 < 3$.
-\end{steps}
+  Fix $N \geq 2$. For $2 \le m \le N$ let $R_m = \sqrt{m\sqrt{(m+1)\sqrt{\cdots\sqrt N}}}$, so that $R_N = \sqrt N$ and $R_m = \sqrt{m R_{m+1}}$ for $m < N$. Let $P(m)$ be the statement ``$R_m < m + 1$''. We prove $P(m)$ for $m = N, N-1, \dots, 2$; this is ordinary induction on $j = N - m$, from $j = 0$ to $j = N - 2$.
+  \begin{steps}
+    \ii Base case $m = N$: $R_N = \sqrt N < N + 1$, because $N < (N+1)^2$.
+    \ii Assume $P(m+1)$ for some $m$ with $2 \le m < N$, that is, $R_{m+1} < m + 2$.
+    \ii Then $R_m = \sqrt{m R_{m+1}} < \sqrt{m(m+2)} = \sqrt{(m+1)^2 - 1} < m + 1$, which is $P(m)$.
+    \ii So $P(2)$ holds, and $P(2)$ says that the left side of the problem, which is $R_2$, is less than $3$.
+  \end{steps}
 \end{proof}
 
-\begin{remark}
-  This is Polya's \emph{inventor's paradox}: the more general statement is easier to prove,
-  because the inductive hypothesis is stronger. The number $3$ in the problem was the value
-  of $m + 1$ at $m = 2$; seeing that is the crux move.
-\end{remark}
-
-\subsection{Edge cases and traps}
-\paragraph{The step must work at the smallest $k$.}
-The following induction proves a false claim.
-
-\begin{example}[A false proof]\label{ex:horses}
-  ``Claim: in any set of $n \ge 1$ horses, all horses have the same color.
-  Base case $n = 1$: true.
-  Step: given $k+1$ horses $h_1, \dots, h_{k+1}$, the horses $h_1, \dots, h_k$ have one color
-  and the horses $h_2, \dots, h_{k+1}$ have one color, by the hypothesis. These groups share $h_2$,
-  so all $k+1$ horses have the same color.''
-\end{example}
-The error is in the step from $k = 1$ to $k = 2$. The two groups are $\{h_1\}$ and $\{h_2\}$,
-and they share no horse. The step must work for \emph{every} $k \geq n_0$, including the smallest one.
-Always test your inductive step at $k = n_0$, and look for any sentence in it that
-silently assumes $k$ is large.
-
 \begin{fig}
-\begin{tikzpicture}[x=0.9cm,y=0.9cm]
-  \foreach \i in {1,...,4} { \fill (\i,0) circle (2.5pt); \node[below=1pt,font=\small] at (\i,0) {$h_\i$}; }
-  \draw (2,-0.2) ellipse (1.4 and 0.6);
-  \draw[dashed] (3,-0.2) ellipse (1.5 and 0.72);
-  \node[font=\small] at (2.5,-1.4) {$k = 3$: the groups share $h_2, h_3$};
-  \begin{scope}[xshift=6.5cm]
-    \foreach \i in {1,2} { \fill (\i,0) circle (2.5pt); \node[below=1pt,font=\small] at (\i,0) {$h_\i$}; }
-    \draw (1,-0.2) ellipse (0.38 and 0.6);
-    \draw[dashed] (2,-0.2) ellipse (0.42 and 0.72);
-    \node[font=\small] at (1.5,-1.4) {$k = 1$: no shared horse};
-  \end{scope}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.56\linewidth, height=4.6cm,
+  axis lines*=left, xmin=1.5, xmax=15.5, ymin=1.2, ymax=3.2,
+  xtick={2,4,...,14}, ytick={1.5,2,2.5,3},
+  xlabel={$N$}, ylabel={$R_2$}, ylabel style={rotate=-90},
+  tick label style={font=\scriptsize}, label style={font=\small},
+  clip=false]
+  \addplot[ink guide,draw=inkred,domain=1.5:15.5] {3};
+  \addplot[only marks,mark=inkdot,inkblue] coordinates {(2,1.4142) (3,1.8612) (4,2.2134) (5,2.4476) (6,2.5885) (7,2.6685) (8,2.7122) (9,2.7355) (10,2.7479) (11,2.7543) (12,2.7577) (13,2.7594) (14,2.7603) (15,2.7607)};
+  \node[anchor=south,font=\scriptsize] at (axis cs:9,3.02) {\InkLabel[inkred]{the bound $3$}};
+\end{axis}
 \end{tikzpicture}
-\captionof{figure}{The argument needs a horse in both groups. That exists for $k \ge 2$ and fails for $k = 1$,
-so the chain of implications breaks at its first link.}
+\figcap{The value of the nested radical for $N = 2, \dots, 15$. It increases and levels off near $2.761$, below the bound $3$ proved above.}
 \end{fig}
 
-\paragraph{The base case is not optional.}
-Let $P(n)$ be ``$n^2 + n$ is odd.'' The step is valid: if $k^2 + k$ is odd, then
-$(k+1)^2 + (k+1) = (k^2 + k) + 2(k+1)$ is odd plus even, hence odd. But $P(n)$ is false for every $n$,
-since $n^2 + n = n(n+1)$ is a product of consecutive integers and is always even. The step alone proves nothing.
+\begin{remark*}[Polya's inventor's paradox]
+  The more general statement is easier to prove, because its inductive hypothesis is stronger. The number $3$ in the problem was the value of $m + 1$ at $m = 2$; seeing that is the crux move.
+\end{remark*}
 
-\paragraph{The step may work only from some point on.}
-If the inductive step needs $k \ge k_1$ (for example, an inequality like $k^2 > 2k + 1$, true only for $k \geq 3$),
-then the base case must be at $n_0 \ge k_1$, and every $n$ below $n_0$ must be checked directly.
-Write down the first $k$ for which each step of your argument is valid, and compare it with your base case.
+\subsubsection*{Edge cases and traps}
 
-\paragraph{Do not use $P(k+1)$ to prove $P(k+1)$.}
-A common error is to start from the equation or inequality $P(k+1)$ and transform it until it becomes true.
-That is valid only if every transformation is reversible (an ``if and only if''), as in Step 3 of the proof
-of \Cref{ex:wallis}, where squaring two positive numbers is reversible. Squaring a possibly negative number,
-or multiplying by a quantity of unknown sign, is not.
+\begin{example*}[A false proof that all horses have one color]\target{ex-horses}
+  ``Claim: in any set of $n \ge 1$ horses, all horses have the same color. Base case $n = 1$: true. Step: given $k+1$ horses $h_1, \dots, h_{k+1}$, the horses $h_1, \dots, h_k$ have one color and the horses $h_2, \dots, h_{k+1}$ have one color, by the hypothesis. These groups share $h_2$, so all $k+1$ horses have the same color.''
+\end{example*}
+The error is in the step from $k = 1$ to $k = 2$. The two groups are $\{h_1\}$ and $\{h_2\}$, and they share no horse. The step must work for \emph{every} $k \geq n_0$, including the smallest one.
 
-\paragraph{Two variables: fix one.}
-If the statement involves $m$ and $n$, decide which one you induct on, and state $P(n)$ with the other
-quantified inside it (``for all $m$, \ldots''). Then the hypothesis is available for every $m$ in the step,
-which is usually what makes the step work.
+\begin{fig}
+\begin{tikzpicture}[x=0.95cm,y=0.95cm]
+  \foreach \i in {1,...,4} { \fill[black] (\i,0) circle (1.8pt); \node[font=\small] at (\i,-0.38) {$h_\i$}; }
+  \PacketInkPath[inkblue,line width=.7pt]{(0.8,0.3) -- (0.8,0.45) -- (3.2,0.45) -- (3.2,0.3)}
+  \node[font=\scriptsize] at (2,0.7) {\InkLabel[inkblue]{$h_1,h_2,h_3$}};
+  \PacketInkPath[inkred,line width=.7pt]{(1.8,-0.65) -- (1.8,-0.8) -- (4.2,-0.8) -- (4.2,-0.65)}
+  \node[font=\scriptsize] at (3,-1.05) {\InkLabel[inkred]{$h_2,h_3,h_4$}};
+  \node[font=\small] at (2.5,-1.6) {$k = 3$: the groups share $h_2, h_3$};
+  \begin{scope}[xshift=6.3cm]
+    \foreach \i in {1,2} { \fill[black] (\i,0) circle (1.8pt); \node[font=\small] at (\i,-0.38) {$h_\i$}; }
+    \PacketInkPath[inkblue,line width=.7pt]{(0.75,0.3) -- (0.75,0.45) -- (1.25,0.45) -- (1.25,0.3)}
+    \node[font=\scriptsize] at (1,0.7) {\InkLabel[inkblue]{$h_1$}};
+    \PacketInkPath[inkred,line width=.7pt]{(1.75,-0.65) -- (1.75,-0.8) -- (2.25,-0.8) -- (2.25,-0.65)}
+    \node[font=\scriptsize] at (2,-1.05) {\InkLabel[inkred]{$h_2$}};
+    \node[font=\small] at (1.5,-1.6) {$k = 1$: no shared horse};
+  \end{scope}
+\end{tikzpicture}
+\figcap{The argument needs a horse in both groups (blue bracket and red bracket). That holds for $k \ge 2$ and fails for $k = 1$, so the chain of implications breaks at its first link.}
+\end{fig}
 
-\subsection{Tools and tricks from this week}
-\begin{itemize}
-  \ii To show $N$ is not a square: \rref{fact:squeeze}{squeeze it between consecutive squares}.
-  \ii ``Infinitely many'': assume a finite list and build a number from it, as in \rref{thm:euclid}{Euclid's theorem};
-  for a congruence class, make the number fall in that class, as in \Cref{ex:threemod4}.
-  \ii Integer polynomials: $a - b \mid P(a) - P(b)$ (\Cref{fact:poly});
-  a nonconstant polynomial takes each value finitely often (\Cref{fact:roots}).
-  \ii Irrationality and rational roots: lowest terms, clear denominators, check parity (\Cref{ex:parity}).
-  \ii The number of objects in a hypothesis tells you how many objects to build (\Cref{ex:tomescu}).
-  \ii Inductive step: find $P(k)$ inside $P(k+1)$ (\Cref{thm:fermat}); remove a piece and count what it adds
-  (\Cref{ex:mantel}); prove the contrapositive if it is easier to induct on.
-  \ii If the step fails, add a parameter and solve for it (\Cref{ex:wallis}), or generalize a fixed number
-  to a variable (\Cref{ex:radical}).
-  \ii Test the step at the smallest $k$; check the base case; check the range where each step is valid.
-\end{itemize}
+\begin{trapbox}
+  \ii \textbf{Test the step at the smallest $k$.} The horse argument is valid for $k \geq 2$ and fails at $k = 1$. Look for any sentence in your step that silently assumes $k$ is large.
+  \ii \textbf{The base case is not optional.} Let $P(n)$ be ``$n^2 + n$ is odd''. The step is valid: if $k^2 + k$ is odd, then $(k+1)^2 + (k+1) = (k^2 + k) + 2(k+1)$ is odd plus even, hence odd. But $P(n)$ is false for every $n$, since $n^2 + n = n(n+1)$ is a product of consecutive integers and so is even. The step alone proves nothing.
+  \ii \textbf{The step may work only from some point on.} If the step needs $k \ge k_1$ (for example an inequality such as $k^2 > 2k + 1$, true only for $k \geq 3$), the base case must be at some $n_0 \ge k_1$, and every $n$ below $n_0$ must be checked directly. Write down the first $k$ for which each step is valid and compare it with the base case.
+  \ii \textbf{Do not use $P(k+1)$ to prove $P(k+1)$.} Starting from the inequality $P(k+1)$ and transforming it until it is true is valid only if every transformation is reversible, as in Step~3 of \ilink{ex-wallis}{the product bound}, where squaring two positive numbers is reversible. Squaring a possibly negative number, or multiplying by a quantity of unknown sign, is not reversible.
+  \ii \textbf{Two variables.} If the statement involves $m$ and $n$, decide which one you induct on, and state $P(n)$ with the other quantified inside it (``for all $m$, \ldots''). Then the hypothesis is available for every $m$ in the step, which is usually what makes the step work.
+\end{trapbox}
+
+\begin{shortcuts}
+  \ii \textbf{Not a square:} squeeze the number between consecutive squares (\ilink{fact-squeeze}{the squeeze}), usually after pairing factors.
+  \ii \textbf{``Infinitely many'':} assume a finite list and build a number from it, as in \ilink{thm-euclid}{Euclid's theorem}; for a congruence class, make the number fall in that class, as in \ilink{ex-threemod4}{the primes $\equiv 3 \pmod 4$}.
+  \ii \textbf{Integer polynomials:} $a - b \mid P(a) - P(b)$ (\ilink{fact-poly}{difference divisibility}); a nonconstant polynomial takes each value finitely often (\ilink{fact-roots}{the finite-roots fact}).
+  \ii \textbf{Irrationality and rational roots:} lowest terms, clear denominators, check parity (\ilink{ex-parity}{the $x^5 + x + 1$ example}).
+  \ii \textbf{The number of objects in a hypothesis} tells you how many objects to build (\ilink{ex-tomescu}{Tomescu's problem}).
+  \ii \textbf{Inductive step:} find $P(k)$ inside $P(k+1)$ (\ilink{thm-fermat}{Fermat}); remove a piece and count what it adds (\ilink{ex-mantel}{Mantel}); prove the contrapositive when it is easier to induct on.
+  \ii \textbf{If the step fails,} add a parameter and solve for it (\ilink{ex-wallis}{the product bound}), or turn a fixed number into a variable (\ilink{ex-radical}{the nested radical}).
+\end{shortcuts}
+
+\section{Problem set}
+
+\textbf{Graded set} (due Sunday 29 November, 11:59 pm, on Classroom; the same problems as the problem set PDF). Required problems are worth 10 points each; challenge problems add half their score.
+
+\begin{prob}\target{prob-1}\textbf{Problem 1 (P\&B 1).}\ Prove that $\sqrt2 + \sqrt3 + \sqrt5$ is an irrational number.\end{prob}
+\begin{prob}\target{prob-2}\textbf{Problem 2 (P\&B 14).}\ Prove that $3^n \geq n^3$ for all positive integers $n$.\end{prob}
+\begin{prob}\target{prob-3}\textbf{Problem 3 (Engel 8.25).}\ Prove that $3^{n+1}$ divides $2^{3^n} + 1$ for all integers $n \geq 0$.\end{prob}
+\begin{prob}\target{prob-4}\textbf{Problem 4 (P\&B 2).}\ Show that no set of nine consecutive integers can be partitioned into two sets with the product of the elements of the first set equal to the product of the elements of the second set.\end{prob}
+\begin{prob}\target{prob-5}\textbf{Problem 5 (P\&B 3).}\ Find the least positive integer $n$ such that any set of $n$ pairwise relatively prime integers greater than $1$ and less than $2005$ contains at least one prime number.\end{prob}
+\begin{prob}\target{prob-6}\textbf{Problem 6 (P\&B 6).}\ Show that there does not exist a function $f \colon \ZZ \to \{1, 2, 3\}$ satisfying $f(x) \neq f(y)$ for all $x, y \in \ZZ$ such that $\abs{x - y} \in \{2, 3, 5\}$.\end{prob}
+\begin{prob}\target{prob-7}\textbf{Problem 7 (P\&B 7).}\ Show that there does not exist a strictly increasing function $f \colon \NN \to \NN$ satisfying $f(2) = 3$ and $f(mn) = f(m) f(n)$ for all $m, n \in \NN$.\end{prob}
+\begin{prob}\target{prob-8}\textbf{Problem 8 (P\&B 10; Hungary 1999).}\ Let $n > 1$ be an arbitrary real number and let $k$ be the number of positive prime numbers less than or equal to $n$. Select $k + 1$ positive integers such that none of them divides the product of all the others. Prove that there exists a number among the chosen $k + 1$ that is bigger than $n$.\end{prob}
+\begin{prob}\target{prob-9}\textbf{Problem 9 (Engel 8.2).}\ There are $n$ identical cars on a circular track. Among all of them, they have just enough gas for one car to complete a lap. Show that there is a car which can complete a lap by collecting gas from the other cars on its way around.\end{prob}
+\begin{prob}\target{prob-10}\textbf{Problem 10 (P\&B 16).}\ Let $n$ be a positive integer. Prove that $1 + \frac{1}{2^3} + \frac{1}{3^3} + \dots + \frac{1}{n^3} < \frac32$.\end{prob}
+\begin{prob}\target{prob-11}\textbf{Problem 11 (P\&B 18).}\ Prove that for any $n \geq 1$, a $2^n \times 2^n$ checkerboard with a $1 \times 1$ corner square removed can be tiled by L-shaped pieces made of three unit squares.\end{prob}
+\begin{prob}\target{prob-12}\textbf{Problem 12 (P\&B 17; USAMO 2003).}\ Prove that for any positive integer $n$ there exists an $n$-digit number (a) divisible by $2^n$ and containing only the digits $2$ and $3$; (b) divisible by $5^n$ and containing only the digits $5, 6, 7, 8, 9$.\end{prob}
+\begin{prob}\target{prob-13}\textbf{Challenge 13 (P\&B 9; Austrian--Polish 1982).}\ Show that the interval $[0, 1]$ cannot be partitioned into two disjoint sets $A$ and $B$ such that $B = A + a$ for some real number $a$.\end{prob}
+\begin{prob}\target{prob-14}\textbf{Challenge 14 (P\&B 19; G.~Raney).}\ Given a sequence of integers $x_1, x_2, \dots, x_n$ whose sum is $1$, prove that exactly one of the cyclic shifts $x_1, \dots, x_n$; $x_2, \dots, x_n, x_1$; \ldots; $x_n, x_1, \dots, x_{n-1}$ has all of its partial sums positive. (A partial sum is the sum of the first $k$ terms, $k \leq n$.)\end{prob}
+\begin{prob}\target{prob-15}\textbf{Challenge 15 (Engel 8.12; Tournament of Towns 1989).}\ We are given $N$ lines ($N > 1$) in a plane, no two of which are parallel and no three of which have a point in common. Prove that it is possible to assign a nonzero integer of absolute value not exceeding $N$ to each region of the plane determined by these lines, such that the sum of the integers on either side of any of the given lines is equal to $0$.\end{prob}
+
+\medskip
+\textbf{Extra practice} (not graded; hints below, full solutions in the solutions PDF).
+
+\begin{prob}\target{prob-X1}\textbf{X1 (P\&B 4; German Mathematical Olympiad 1985).}\ Every point of three-dimensional space is colored red, green, or blue. Prove that one of the colors attains all distances, meaning that any positive real number represents the distance between two points of this color.\end{prob}
+\begin{prob}\target{prob-X2}\textbf{X2 (P\&B 8; Canadian Mathematical Olympiad 2002).}\ Determine all functions $f \colon \NN \to \NN$ satisfying $x f(y) + y f(x) = (x + y) f(x^2 + y^2)$ for all positive integers $x$ and $y$.\end{prob}
+\begin{prob}\target{prob-X3}\textbf{X3 (Engel 8.13; Tournament of Towns).}\ The sequence $a_n$ is defined by $a_0 = 9$ and $a_{n+1} = 3a_n^4 + 4a_n^3$ for $n \geq 0$. Show that $a_{10}$ contains more than $1000$ nines in decimal notation.\end{prob}
+\begin{prob}\target{prob-X4}\textbf{X4 (P\&B 12).}\ Prove that $\abs{\sin nx} \leq n\abs{\sin x}$ for any real number $x$ and positive integer $n$.\end{prob}
+\begin{prob}\target{prob-X5}\textbf{X5 (P\&B 15).}\ Let $n \geq 6$ be an integer. Show that $\left(\frac n3\right)^n < n! < \left(\frac n2\right)^n$.\end{prob}
+\begin{prob}\target{prob-X6}\textbf{X6 (P\&B 20).}\ Let $x_1, \dots, x_n, y_1, \dots, y_m$ be positive integers, $n, m > 1$. Assume that $x_1 + \dots + x_n = y_1 + \dots + y_m < mn$. Prove that in the equality $x_1 + \dots + x_n = y_1 + \dots + y_m$ one can suppress some (but not all) terms in such a way that the equality is still satisfied.\end{prob}
+
+\section*{Hints for the extra practice}
+Try each problem before reading its hint. The graded problems have no printed hints; ask for one if you need it (it lowers that problem's maximum to 7).
+
+\par\medskip\noindent\textbf{\hyperlink{prob-X1}{X1}} Assume each color misses some distance, and order the missed distances. Put a sphere around a point of the color whose missed distance is largest.
+
+\par\medskip\noindent\textbf{\hyperlink{prob-X2}{X2}} If $f(a) < f(b)$, compare $(a+b)f(a)$, $af(b) + bf(a)$ and $(a+b)f(b)$. What does that say about $f(a^2+b^2)$?
+
+\par\medskip\noindent\textbf{\hyperlink{prob-X3}{X3}} Factor $a_{n+1} + 1$ as a polynomial in $a_n$; it has $(a_n + 1)^2$ as a factor. Count the nines at the end.
+
+\par\medskip\noindent\textbf{\hyperlink{prob-X4}{X4}} Do $n = 2$ first: $\abs{\sin 2x} = 2\abs{\sin x}\abs{\cos x}$. Then expand $\sin(k+1)x$ with the addition formula.
+
+\par\medskip\noindent\textbf{\hyperlink{prob-X5}{X5}} After using the hypothesis, both inequalities reduce to bounds on $\left(1 + \frac1n\right)^n$.
+
+\par\medskip\noindent\textbf{\hyperlink{prob-X6}{X6}} Induct on $m + n$. Move the largest terms $x_1 \geq y_1$ together: $(x_1 - y_1) + x_2 + \dots + x_n = y_2 + \dots + y_m$.
 
 \end{document}

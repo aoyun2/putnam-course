@@ -1,0 +1,116 @@
+\documentclass[10pt]{scrartcl}
+\usepackage[mdthm,colorsec,noasy]{evan}
+\usepackage{handout}
+\usepackage{figure-ink}
+\newcommand{\PacketInkPath}[2][]{\InkStroke[#1]{#2}}
+\tikzset{
+  >={Stealth[length=4.6pt,width=2pt,inset=1.2pt]},
+  figaxis/.style={ink arrow,draw=inkslate,line width=.35pt},
+  figguide/.style={ink guide,draw=inkslate}
+}
+\renewcommand{\S}{\ensuremath{\mathsection}}
+
+\title{Week 1: Contradiction and Induction}
+\subtitle{Solutions to the extra practice}
+\author{Aaron Xiong}
+\date{23 November 2026}
+\ihead{}
+
+\begin{document}
+\maketitle
+
+Solutions to the graded set are added after the set has been graded.
+
+\section{Extra practice}
+
+\begin{prob}\target{sol-X1}\textbf{\xlink{week01}{prob-X1}{X1} (P\&B 4; German MO 1985).}\ Every point of space is colored red, green or blue. Then one color attains all distances.\par
+\idea{Assume each color misses a distance and name the colors so that red misses the largest one. A sphere of that radius around a red point has no red point, so it is green and blue only, and a sphere or circle of radius $\rho$ contains two points at every distance up to $2\rho$.}
+\begin{steps}
+  \ii Assume, for contradiction, that every color misses some distance. Name the colors so that red misses $a$, green misses $b$ and blue misses $c$, with $a \geq b \geq c > 0$.
+  \ii On a sphere or a circle of radius $\rho$, the distance between two points takes every value in $(0, 2\rho]$: move one point continuously from the other point to the antipodal point. We use this fact three times.
+  \ii Let $S$ be the sphere of radius $a$ around a red point; if there is no red point, let $S$ be any sphere of radius $a$. No point of $S$ is red, because red misses $a$.
+  \ii $S$ has a green point. Otherwise $S$ is all blue, and since $c \leq a < 2a$, Step~2 gives two blue points of $S$ at distance $c$, which blue misses.
+  \ii Let $P$ be a green point of $S$, and let $C$ be the set of points of $S$ at distance $b$ from $P$. Since $0 < b < 2a$, $C$ is a circle. If the angle at the center of $S$ between $P$ and a point of $C$ is $\theta$, then $b = 2a\sin\frac\theta2$ and $C$ has radius
+  \[ \rho = a \sin\theta = b\sqrt{1 - \frac{b^2}{4a^2}} \geq b\sqrt{1 - \frac14} = \frac{\sqrt3}{2}\, b, \]
+  using $b \leq a$.
+  \ii No point of $C$ is green, because it is at distance $b$ from the green point $P$, and none is red, because $C \subset S$. So $C$ is all blue.
+  \ii $2\rho \geq \sqrt3\, b > c$, so by Step~2 the circle $C$ contains two points at distance $c$. Both are blue, and blue misses $c$. This contradiction proves the claim.
+\end{steps}
+\end{prob}
+
+\begin{fig}
+\begin{tikzpicture}[scale=1.05]
+  \InkRegion[inkslate]{(0,0) circle (1.6)}
+  \PacketInkPath[black]{(0,0) circle (1.6)}
+  \PacketInkPath[inkblue,line width=.7pt]{(0,0.9875) ellipse (1.2589 and 0.25)}
+  \fill[black] (0,0) circle (1.5pt);
+  \node[right=2pt] at (0,0) {\InkLabel{$O$}};
+  \fill[inkgreen] (0,1.6) circle (1.8pt);
+  \node[above=2pt] at (0,1.6) {\InkLabel{$P$}};
+  \PacketInkPath[black]{(0,1.6) -- (1.2589,0.9875)}
+  \node at (0.75,1.52) {\InkLabel{$b$}};
+  \PacketInkPath[black]{(0,0) -- (-1.131,-1.131)}
+  \node[above left=-2pt] at (-0.6,-0.6) {\InkLabel{$a$}};
+  \node[right=4pt] at (1.6,0.6) {\InkLabel[inkblue]{$C$: all blue}};
+  \node[right=4pt] at (1.25,-1.15) {\InkLabel{$S$: green and blue}};
+\end{tikzpicture}
+\figcap{The sphere $S$ of radius $a$ about a red point $O$, a green point $P$ on it, and the circle $C$ of points of $S$ at distance $b$ from $P$. Drawn to scale with $b = \tfrac78 a$; then $C$ has radius about $0.79a$.}
+\end{fig}
+
+\begin{prob}\target{sol-X2}\textbf{\xlink{week01}{prob-X2}{X2} (P\&B 8; Canadian MO 2002).}\ The functions $f \colon \NN \to \NN$ with $x f(y) + y f(x) = (x+y) f(x^2+y^2)$ for all $x, y \in \NN$ are exactly the constant functions.\par
+\idea{The equation says $f(x^2+y^2)$ is a weighted average of $f(x)$ and $f(y)$ with positive weights, so it lies strictly between them when they differ. That shrinks a positive integer gap, which is impossible forever.}
+\begin{steps}
+  \ii A constant function $f = K$ works: both sides equal $(x+y)K$.
+  \ii Let $f$ satisfy the equation and suppose $f$ is not constant. Then some $a, b$ have $f(a) < f(b)$. The differences $f(b) - f(a)$ over all such pairs are positive integers, so by well-ordering we can choose a pair with $f(b) - f(a)$ smallest.
+  \ii Let $c = a^2 + b^2$. The equation with $x = a$, $y = b$ gives $f(c) = \dfrac{a f(b) + b f(a)}{a+b}$, hence
+  \[ f(c) - f(a) = \frac{a\,(f(b) - f(a))}{a+b} > 0, \qquad f(b) - f(c) = \frac{b\,(f(b) - f(a))}{a+b} > 0. \]
+  \ii So $f(a) < f(c)$ and $0 < f(c) - f(a) < f(b) - f(a)$, which contradicts the choice of the pair. Hence $f$ is constant.
+\end{steps}
+\end{prob}
+
+\begin{prob}\target{sol-X3}\textbf{\xlink{week01}{prob-X3}{X3} (Engel 8.13; Tournament of Towns).}\ With $a_0 = 9$ and $a_{n+1} = 3a_n^4 + 4a_n^3$, the number $a_{10}$ has more than $1000$ nines.\par
+\idea{A number ends in $t$ nines exactly when $10^t$ divides the number plus $1$. The polynomial $3a^4 + 4a^3 + 1$ has the factor $(a+1)^2$, so the count of final nines at least doubles at each step: $1, 2, 4, \dots, 2^{10} = 1024$.}
+\begin{steps}
+  \ii Every $a_n$ is a positive integer, by induction, since $a_0 = 9$ and $3a^4 + 4a^3 > 0$ for $a > 0$.
+  \ii Expanding shows $3a^4 + 4a^3 + 1 = (a+1)^2 (3a^2 - 2a + 1)$. So $a_{n+1} + 1 = (a_n + 1)^2 (3a_n^2 - 2a_n + 1)$, and the second factor is an integer.
+  \ii Let $P(n)$ be ``$10^{2^n}$ divides $a_n + 1$''. $P(0)$ holds: $a_0 + 1 = 10$. If $10^{2^n} \mid a_n + 1$, then $10^{2^{n+1}} \mid (a_n + 1)^2$, which divides $a_{n+1} + 1$ by Step~2. So $P(n)$ holds for all $n \geq 0$.
+  \ii By $P(10)$, $a_{10} + 1 = k \cdot 10^{1024}$ for an integer $k \geq 1$ (positive by Step~1). Then $a_{10} = (k-1) \cdot 10^{1024} + (10^{1024} - 1)$, so the last $1024$ digits of $a_{10}$ are all $9$, and $1024 > 1000$.
+\end{steps}
+\end{prob}
+
+\begin{prob}\target{sol-X4}\textbf{\xlink{week01}{prob-X4}{X4} (P\&B 12).}\ $\abs{\sin nx} \leq n \abs{\sin x}$ for every real $x$ and every integer $n \geq 1$.\par
+\idea{The addition formula writes $\sin(k+1)x$ in terms of $\sin kx$ and $\sin x$, and both cosines that appear have absolute value at most $1$.}
+\begin{steps}
+  \ii Fix $x$ and induct on $n$. For $n = 1$ both sides equal $\abs{\sin x}$.
+  \ii Assume $\abs{\sin kx} \leq k\abs{\sin x}$. By the addition formula, $\sin(k+1)x = \sin kx \cos x + \cos kx \sin x$.
+  \ii By the triangle inequality and $\abs{\cos x}, \abs{\cos kx} \leq 1$,
+  \[ \abs{\sin(k+1)x} \leq \abs{\sin kx} + \abs{\sin x} \leq k\abs{\sin x} + \abs{\sin x} = (k+1)\abs{\sin x}. \]
+\end{steps}
+\end{prob}
+
+\begin{prob}\target{sol-X5}\textbf{\xlink{week01}{prob-X5}{X5} (P\&B 15).}\ $\left(\frac n3\right)^n < n! < \left(\frac n2\right)^n$ for every integer $n \geq 6$.\par
+\idea{The ratio of consecutive terms of $(n/c)^n$ is $\frac{n+1}{c}\left(1 + \frac1n\right)^n$, and the ratio of consecutive factorials is $n + 1$. So each step reduces to comparing $\left(1 + \frac1n\right)^n$ with $c$, and $2 \leq \left(1 + \frac1n\right)^n < 3$.}
+\begin{steps}
+  \ii \textbf{The bounds $2 \leq (1 + \frac1n)^n < 3$ for $n \geq 1$.} By the binomial theorem, $(1+\frac1n)^n = \sum_{j=0}^{n} \binom nj n^{-j}$. The terms $j = 0, 1$ give $1 + 1 = 2$ and the rest are nonnegative, so the sum is at least $2$. For $j \geq 1$, $\binom nj n^{-j} = \frac{1}{j!}\cdot\frac{n(n-1)\cdots(n-j+1)}{n^j} \leq \frac{1}{j!} \leq \frac{1}{2^{j-1}}$, so the sum is at most $1 + \sum_{j \ge 1} 2^{1-j} = 3$, with strict inequality because the terms with $j > n$ are missing from the finite sum.
+  \ii \textbf{Lower bound, for all $n \geq 1$.} For $n = 1$: $\frac13 < 1$. If $(k/3)^k < k!$, then
+  \[ \left(\tfrac{k+1}{3}\right)^{k+1} = \tfrac{k+1}{3}\left(\tfrac k3\right)^k \left(1 + \tfrac1k\right)^k < \tfrac{k+1}{3} \cdot k! \cdot 3 = (k+1)!. \]
+  \ii \textbf{Upper bound, for $n \geq 6$.} For $n = 6$: $6! = 720 < 729 = 3^6$. If $k \geq 6$ and $k! < (k/2)^k$, then
+  \[ \left(\tfrac{k+1}{2}\right)^{k+1} = \tfrac{k+1}{2}\left(\tfrac k2\right)^k \left(1 + \tfrac1k\right)^k > \tfrac{k+1}{2} \cdot k! \cdot 2 = (k+1)!. \]
+  \ii The base case $6$ is needed: $5! = 120 > 2.5^5 \approx 97.7$, so the upper bound is false for $n = 5$.
+\end{steps}
+\end{prob}
+
+\begin{prob}\target{sol-X6}\textbf{\xlink{week01}{prob-X6}{X6} (P\&B 20).}\ If $x_1 + \dots + x_n = y_1 + \dots + y_m < mn$ with positive integers and $n, m > 1$, then there are nonempty sets $I \subseteq \{1, \dots, n\}$ and $J \subseteq \{1, \dots, m\}$, not both the full index set, with $\sum_{i \in I} x_i = \sum_{j \in J} y_j$.\par
+\idea{Subtract the largest $y$ from the largest term overall. The equation keeps its form with one term fewer, and because the removed $y$ is at least the average of the $y$'s, the new sum is still below the new product. When $n = 1$ or $m = 1$ the hypothesis cannot hold, which lets the induction start there.}
+\begin{steps}
+  \ii Prove the statement for all $n, m \geq 1$, by induction on $n + m$. If $m = 1$, the hypothesis says $x_1 + \dots + x_n < n$, which is false because each $x_i \geq 1$; so there is nothing to prove. The case $n = 1$ is the same. This covers $n + m = 2$.
+  \ii Let $n, m \geq 2$ and assume the statement for all smaller $n + m$. Let $S$ be the common sum. The hypothesis and the conclusion do not change if the two sides are exchanged, so we may assume the largest of all the terms is an $x$; renumber so that it is $x_1$ and so that $y_1$ is the largest $y$. Then $x_1 \geq y_1$.
+  \ii If $x_1 = y_1$, take $I = \{1\}$ and $J = \{1\}$. They are not full, because $n \geq 2$.
+  \ii If $x_1 > y_1$, consider $(x_1 - y_1) + x_2 + \dots + x_n = y_2 + \dots + y_m$: $n$ positive integers on the left and $m - 1$ on the right, with sum $S - y_1$. Since $y_1$ is the largest of $m$ numbers with sum $S$, $y_1 \geq S/m$, so
+  \[ S - y_1 \leq S\cdot\frac{m-1}{m} < mn \cdot \frac{m-1}{m} = n(m-1). \]
+  \ii By the induction hypothesis there are nonempty $I \subseteq \{1, \dots, n\}$ and $J \subseteq \{2, \dots, m\}$, not both full, with equal sums in the new equation. If $1 \notin I$, the same $I$ and $J$ work for the original equation, and $I$ is not full. If $1 \in I$, then $\sum_{i \in I} x_i = \sum_{j \in J} y_j + y_1$, so $I$ and $J \cup \{1\}$ work; they are not both full, because otherwise $I$ and $J$ would both be full in the new equation.
+  \ii The bound $mn$ cannot be raised: with $n = 2$, $m = 3$, the equation $3 + 3 = 2 + 2 + 2$ has sum $mn = 6$, and no nonempty proper choice balances, since every partial sum on the left is $3$ or $6$ and every one on the right is even.
+\end{steps}
+\end{prob}
+
+\end{document}
